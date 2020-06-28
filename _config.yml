@@ -31,8 +31,8 @@ masthead_title           : # overrides the website title displayed in the masthe
 words_per_minute         : 200
 comments:
   provider               : "disqus" # false (default), "discourse", "facebook", "staticman", "staticman_v2", "utterances", "custom"
-  disqus:
-    shortname            : https://well-balanced-github-io.disqus.com/
+  disqus: 
+    shortname            : "well-balanced-github-io"
   discourse:
     server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
   facebook:
@@ -273,7 +273,7 @@ defaults:
       path: ""
       type: posts
     values:
-      layout: splash
+      layout: single
       author_profile: true
       read_time: true
       comments: true
