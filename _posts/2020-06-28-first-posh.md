@@ -3,9 +3,10 @@ title: "start github pages."
 excerpt: "started github blog service which is called 'github.io'"
 
 categories:
-    - Blog
+    - development
 tags:
     - Blog
+    - first
 last_modified_at: 2020-06-28T22:42:00-05:00
 ---
 
