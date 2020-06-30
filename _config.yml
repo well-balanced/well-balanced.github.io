@@ -24,8 +24,8 @@ description              : ""
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
-teaser                   : "/assets/images/profile.png"
-logo                     : "/assets/images/profile.png"
+teaser                   : 
+logo                     : 
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -75,7 +75,7 @@ facebook:
   username               :
   app_id                 :
   publisher              :
-og_image                 : "/assets/images/profile.png"
+og_image                 : 
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:
@@ -92,7 +92,7 @@ analytics:
 
 # Site Author
 author:
-  name             : "김 우 식 (Woosik Kim)"
+  name             : "Woosik Kim"
   avatar           : "/assets/images/profile.png"
   first_bio        : "별 볼 것 없는 공간입니다."
   second_bio       : "별 다를 것 없는 우리구요."
@@ -129,7 +129,7 @@ footer:
       url: "https://www.facebook.com/woosik.kim.73113"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://well-balanced.github.io"
+      url: "https://github.com/well-balanced"
     - label: "GitLab"
       icon: "fab fa-fw fa-gitlab"
       # url:
