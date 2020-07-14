@@ -7,6 +7,8 @@
    ========================================================================== */
 
 .sidebar {
+  margin: 0 auto;
+  padding-left: 35px;
   @include clearfix();
   // @include breakpoint(max-width $large) {
   //   /* fix z-index order of follow links */
@@ -127,12 +129,15 @@
   }
 
   img {
+    // margin-top: 20px;
+    // margin-bottom: 20px;
+    // margin: 0 auto;
     max-width: 110px;
     border-radius: 50%;
 
     @include breakpoint($large) {
-      padding: 5px;
-      border: 1px solid $border-color;
+      padding: 0.5px;
+      border: 0.5px solid $border-color;
     }
   }
 }
@@ -140,7 +145,8 @@
 .author__content {
   display: table-cell;
   vertical-align: top;
-  padding-left: 15px;
+  padding-top: 5px;
+  padding-left: 25px;
   padding-right: 25px;
   line-height: 1;
 
@@ -159,6 +165,7 @@
 
 .author__name {
   margin: 0;
+  font-weight: 300;
 
   @include breakpoint($large) {
     margin-top: 10px;
@@ -173,10 +180,11 @@
 .author__bio {
   margin: 0;
   line-height: 1em;
+  font-weight: 200;
 
   @include breakpoint($large) {
     margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 }
 

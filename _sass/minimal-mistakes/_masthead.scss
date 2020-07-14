@@ -4,7 +4,7 @@
 
 .masthead {
   position: relative;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 0px solid $border-color;
   -webkit-animation: $intro-transition;
   animation: $intro-transition;
   -webkit-animation-delay: 0.15s;
@@ -15,6 +15,8 @@
     @include clearfix;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 0.5em;
     max-width: 100%;
     display: -webkit-box;
@@ -45,12 +47,14 @@
 }
 
 .site-title {
+  font-weight: 300;
+  // letter-spacing: 0.5px;
+  word-spacing: 3px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-item-align: center;
   align-self: center;
-  font-weight: bold;
   // z-index: 20;
 }
 
@@ -90,5 +94,9 @@
   &--lg {
     padding-right: 2em;
     font-weight: 700;
+  }
+  
+  a {
+    font-weight: 200;
   }
 }

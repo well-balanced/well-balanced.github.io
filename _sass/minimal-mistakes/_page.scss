@@ -343,6 +343,8 @@ body {
   .archive__subtitle {
     clear: both;
     border: 0;
+    font-weight: 500;
+    margin-bottom: 10px;
   }
 
   + .taxonomy__section {
@@ -357,6 +359,7 @@ body {
 
 .taxonomy__count {
   color: $muted-text-color;
+  font-weight: 300;
 }
 
 .taxonomy__index {
