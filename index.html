@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woosik Kim</title>
+<meta name="description" content="Woosik Kim — master's student at the Robotics &amp; Vision Lab, KAIST. I make artificial things that people can feel something for.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#2a221c; --bg2:#1b1511; --ink:#ecdcc0; --soft:#a8957a; --pupil:#f0ac5c;
+    --glow:rgba(233,168,92,.30);
+  }
+  body.light{
+    --bg1:#f2ece2; --bg2:#e8dfd0; --ink:#2b241f; --soft:#7d7064; --pupil:#2b241f;
+    --glow:rgba(233,168,92,.26);
+  }
+  /* ---------- Degas pastel themes: wall, floor, three chalk colours, tutu hatching ---------- */
+  body.pastel{
+    --w1:#cbc4a2; --w2:#b9b190; --f1:#c99d63; --f2:#b78850; --fat:76%; --wash:rgba(150,180,165,.35);
+    --ink:#4a3022; --soft:#6e5a44; --pupil:#3c5e58; --glow:rgba(255,236,200,.55); --acc:#8b4a3a;
+    --s0:#4a3022; --s1:#e2967a; --s2:#6f9c93; --h0:#f2b9a0; --h1:#f7d3bd; --h2:#e8a68c;
+  }
+  body.pastel[data-pv="ivory"]{  /* sketchbook ivory: graphite + one ochre accent */
+    --w1:#f3ecdc; --w2:#ece2cd; --f1:#ece2cd; --f2:#e6dbc4; --fat:100%; --wash:rgba(255,255,255,.4);
+    --ink:#2e2925; --soft:#7c7268; --pupil:#2e2925; --glow:rgba(230,190,130,.28); --acc:#a8742f;
+    --s0:#2e2925; --s1:#d9a65a; --s2:#9a948c; --h0:#efd2a4; --h1:#f6e4c4; --h2:#dcb98a;
+  }
+  body.pastel[data-pv="sage"]{   /* pastel on pale green paper */
+    --w1:#dfe1cc; --w2:#d0d3b9; --f1:#c5b48f; --f2:#b39f77; --fat:80%; --wash:rgba(255,255,240,.45);
+    --ink:#3e3326; --soft:#6a6452; --pupil:#3e3326; --glow:rgba(255,236,200,.5); --acc:#9b5c45;
+    --s0:#3e3326; --s1:#eba98c; --s2:#fbf3e2; --h0:#f2bfa6; --h1:#fbe6d6; --h2:#e6a993;
+  }
+  body.pastel[data-pv="buff"]{   /* Degas's buff paper: sepia, terracotta, slate */
+    --w1:#e6d3ae; --w2:#dcc59a; --f1:#c79e68; --f2:#b08754; --fat:82%; --wash:rgba(255,245,225,.45);
+    --ink:#3f2a1d; --soft:#76593f; --pupil:#3f2a1d; --glow:rgba(255,236,200,.5); --acc:#a24e33;
+    --s0:#3f2a1d; --s1:#cf6f4c; --s2:#7d8f99; --h0:#efb79a; --h1:#f7d9c2; --h2:#d98f72;
+  }
+  body.pastel[data-pv="grey"]{   /* grey toned paper: charcoal + white chalk highlights */
+    --w1:#d9d5cc; --w2:#cbc6bb; --f1:#bdb5a6; --f2:#ada493; --fat:84%; --wash:rgba(255,255,255,.4);
+    --ink:#2b2a28; --soft:#6b675f; --pupil:#2b2a28; --glow:rgba(255,250,240,.55); --acc:#b46a55;
+    --s0:#2b2a28; --s1:#e8a58d; --s2:#fbf8f1; --h0:#ffffff; --h1:#f6d6c8; --h2:#ece6dc;
+  }
+  body.pastel[data-pv="etoile"]{ /* after "L'Étoile": dark stage, footlights */
+    --w1:#2f3d36; --w2:#1f2925; --f1:#5d4a2c; --f2:#3a2e1c; --fat:79%; --wash:rgba(120,170,140,.18);
+    --ink:#f1e3c7; --soft:#b9b096; --pupil:#f5b85e; --glow:rgba(245,184,94,.40); --acc:#f2b25c;
+    --s0:#f3e6cc; --s1:#f2b25c; --s2:#8fc9b2; --h0:#fff1dc; --h1:#f9d9b0; --h2:#f3c08a;
+  }
+  body.pastel[data-pv="paper"]{  /* pastel on toned paper, no room */
+    --w1:#ebe2d0; --w2:#e2d6c0; --f1:#e2d6c0; --f2:#ddd0b8; --fat:100%; --wash:rgba(255,255,255,.3);
+    --ink:#3d2c22; --soft:#7a6656; --pupil:#3d2c22; --glow:rgba(240,200,170,.35); --acc:#b06a5a;
+    --s0:#3d2c22; --s1:#e3a49a; --s2:#9cbfd0; --h0:#f0c3b5; --h1:#f6d8c7; --h2:#c9dde6;
+  }
+  body.pastel{background:
+    radial-gradient(ellipse 30vw 40vh at 18% 20%, var(--wash), transparent 70%),
+    linear-gradient(var(--w1) 0, var(--w2) var(--fat), var(--f1) calc(var(--fat) + .2%), var(--f2) 100%)}
+  body.pastel::after{opacity:.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .4 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  body.pastel[data-pv="etoile"]::after{mix-blend-mode:screen;opacity:.18}
+  body.pastel #draw{filter:url(#chalk)}
+  body.pastel #fig path.p0{stroke:var(--s0);stroke-width:2.6px}
+  body.pastel #fig path.p1{stroke:var(--s1);stroke-width:3.4px;opacity:.7}
+  body.pastel #fig path.p2{stroke:var(--s2);stroke-width:2.6px;opacity:.55}
+  body.pastel #fig path.hatch{display:inline}
+  #fig path.hatch{display:none;stroke-width:4px;opacity:.75}
+  body.pastel .intro em{color:var(--acc)}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:linear-gradient(var(--bg1),var(--bg2)); color:var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-weight:300; overflow:hidden;
+    transition:background .9s, color .9s;
+  }
+  body::before{ /* the soft wash on the wall above the case */
+    content:"";position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 34vw 70vh at 72% 100%, var(--glow), transparent 70%);
+    transition:background .9s;
+  }
+  body::after{ /* paper / wall grain */
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.14;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  main{position:absolute;left:7vw;top:13vh;width:min(440px,38vw);z-index:2}
+  .hello{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--soft)}
+  h1{font:italic 400 clamp(50px,6.4vw,88px)/1 'Instrument Serif',serif;margin:8px 0 30px;letter-spacing:-.01em}
+  .intro p{font:400 clamp(16px,1.35vw,19px)/1.75 'Instrument Serif','Gowun Batang',serif;margin:0 0 16px;color:var(--ink);opacity:.92}
+  .intro em{font-style:italic;color:var(--soft)}
+  .say{margin-top:28px;font-size:11px;color:var(--soft);letter-spacing:.03em}
+
+  #fig{position:absolute;right:5vw;bottom:-14vh;height:min(106vh,80vw);width:auto;overflow:visible;z-index:1}
+  #fig path{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round;transition:stroke .9s}
+  #fig .pupil{fill:var(--pupil);stroke:none;transition:fill .9s}
+  body:not(.light) #fig .pupil{filter:drop-shadow(0 0 3px var(--pupil))}
+
+  /* ---------- the lamp: pull the cord to switch sage (lights on) ↔ étoile (lights off) ---------- */
+  #lamp{position:fixed;right:6vw;top:0;z-index:5;cursor:pointer;width:70px}
+  #lamp svg{display:block;overflow:visible}
+  #lamp path{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round}
+  body.pastel #lamp{filter:url(#chalk)}
+  #lamp .chain{transform-origin:46px 60px;transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
+  #lamp:hover .chain{animation:sway 1.6s ease-in-out infinite}
+  #lamp.pull .chain{animation:none;transform:translateY(14px)}
+  @keyframes sway{0%,100%{transform:rotate(0)}30%{transform:rotate(6deg)}70%{transform:rotate(-5deg)}}
+  #lamp .bulb{fill:var(--pupil);stroke:none;opacity:.15;transition:opacity .6s}
+  body[data-pv="etoile"] #lamp .bulb{opacity:1;filter:drop-shadow(0 0 8px var(--pupil))}
+  .hint{position:fixed;right:6vw;bottom:3.5vh;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);z-index:2}
+
+  @media (max-width:760px){
+    body{overflow:auto}
+    main{position:relative;left:auto;top:auto;width:auto;padding:12vh 8vw 0}
+    #fig{position:relative;display:block;right:auto;bottom:auto;height:70vh;margin:4vh auto 0}
+    body::before{background:radial-gradient(ellipse 70vw 40vh at 50% 100%, var(--glow), transparent 70%)}
+    .hint{display:none}
+  }
+  /* ---------- font sets: name / body / small text ---------- */
+  body[data-font] h1{font-family:var(--fn)}
+  body[data-font] .intro p{font-family:var(--fb);font-size:var(--fbs,clamp(16px,1.35vw,19px))}
+  body[data-font] .hello, body[data-font] .say{font-family:var(--fs)}
+  body[data-font="cormorant"]{--fn:'Cormorant Garamond',serif;--fb:'Cormorant Garamond','Nanum Myeongjo',serif;--fs:'IBM Plex Mono',monospace;--fbs:clamp(17px,1.5vw,21px)}
+  body[data-font="garamond"]{--fn:'EB Garamond',serif;--fb:'EB Garamond','Nanum Myeongjo',serif;--fs:'Space Mono',monospace}
+  body[data-font="newsreader"]{--fn:'Newsreader',serif;--fb:'Newsreader','Gowun Batang',serif;--fs:'DM Mono',monospace}
+  body[data-font="fraunces"]{--fn:'Fraunces',serif;--fb:'Fraunces','Gowun Batang',serif;--fs:'DM Mono',monospace;--fbs:clamp(15px,1.25vw,18px)}
+  body[data-font="hand"]{--fn:'Caveat',cursive;--fb:'Instrument Serif','Gowun Batang',serif;--fs:'Gaegu',cursive}
+  body[data-font="hand"] h1{font-style:normal}
+  body[data-font="hand"] .hello,body[data-font="hand"] .say{font-size:15px;letter-spacing:.04em;text-transform:none}
+  body[data-font="mono"]{--fn:'Instrument Serif',serif;--fb:'IBM Plex Mono','Gowun Batang',monospace;--fs:'IBM Plex Mono',monospace;--fbs:13px}
+  body[data-font="mono"] .intro p{line-height:1.95;font-weight:300}
+  /* ---------- intro in pen handwriting ---------- */
+  body[data-font] .intro.hand p{font:500 calc(clamp(23px,2.1vw,30px) * var(--hz,1))/var(--hl,1.4) var(--hf,'Caveat'),'Nanum Pen Script',cursive;margin:0 0 14px;opacity:1}
+  /* handwriting candidates: font / size factor / line height */
+  body[data-hand="kalam"]{--hf:'Kalam';--hz:.78;--hl:1.6}
+  body[data-hand="patrick"]{--hf:'Patrick Hand';--hz:.86;--hl:1.5}
+  body[data-hand="shadows"]{--hf:'Shadows Into Light Two';--hz:.82;--hl:1.55}
+  body[data-hand="reenie"]{--hf:'Reenie Beanie';--hz:1.12;--hl:1.25}
+  body[data-hand="homemade"]{--hf:'Homemade Apple';--hz:.62;--hl:1.9}
+  body[data-hand="nanumpen"]{--hf:'Nanum Pen Script';--hz:1.12;--hl:1.3}
+  body[data-hand="gochi"]{--hf:'Gochi Hand';--hz:.86;--hl:1.5}
+  body[data-hand="indie"]{--hf:'Indie Flower';--hz:.8;--hl:1.6}
+  body[data-hand="grace"]{--hf:'Covered By Your Grace';--hz:.95;--hl:1.4}
+  .say a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:color-mix(in srgb,var(--soft) 50%,transparent)}
+  .say a:hover{color:var(--ink)}
+  /* ---------- what sits behind the text (pick one; the others stay in code) ---------- */
+  main.note{
+    --rule:32px; --txt:#1f1c19; --txtSoft:#6a6258;
+    left:6vw; top:13vh; width:min(470px,40vw); padding:30px 40px 26px;
+  }
+  body[data-pv="etoile"][data-bg="glow"] main.note,
+  body[data-pv="etoile"][data-bg="sketch"] main.note{--txt:#f6ead2;--txtSoft:#bdb39a}
+  main.note::before{content:"";position:absolute;z-index:-1;pointer-events:none}
+  #noteFrame{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:-1;display:none}
+  #noteFrame path{fill:none;stroke:var(--txt);stroke-linecap:round;stroke-linejoin:round}
+  body.pastel #noteFrame, body.pastel #photoFrame{filter:url(#chalk)}
+  body.pastel #noteFrame path.p0, body.pastel #photoFrame path.p0{stroke:var(--s0);stroke-width:2.2px}
+  body.pastel #noteFrame path.p1, body.pastel #photoFrame path.p1{stroke:var(--s1);stroke-width:3px;opacity:.7}
+  body.pastel #noteFrame path.p2, body.pastel #photoFrame path.p2{stroke:var(--s2);stroke-width:2.4px;opacity:.6}
+
+  /* glow: no object, just a pool of light on the wall behind the words */
+  body[data-bg="glow"] main.note::before{inset:-70px -90px;background:radial-gradient(ellipse 58% 54% at 46% 48%, rgba(255,251,240,.85), rgba(255,251,240,.4) 48%, transparent 72%)}
+  body[data-pv="etoile"][data-bg="glow"] main.note::before{background:radial-gradient(ellipse 58% 54% at 46% 48%, rgba(245,184,94,.16), transparent 70%)}
+  /* card: a plain museum label */
+  body[data-bg="card"] main.note{background:#f8f3e8;box-shadow:0 1px 2px rgba(0,0,0,.06), 0 14px 34px rgba(40,30,10,.16)}
+  /* sketch: a loose pen box drawn around the words, in the same line as the robot */
+  body[data-bg="sketch"] #noteFrame{display:block}
+  body[data-bg="sketch"] main.note::before{inset:6px;background:rgba(255,251,240,.5)}
+  body[data-pv="etoile"][data-bg="sketch"] main.note::before{background:rgba(0,0,0,.18)}
+  body[data-bg="sketch"][data-sk="corners"] main.note::before,
+  body[data-bg="sketch"][data-sk="brackets"] main.note::before{background:none}
+  body[data-bg="sketch"][data-sk="oneline"] main.note::before{inset:10px}
+  /* wash: a rough patch of cream pastel, rubbed onto the wall */
+  body[data-bg="wash"] main.note::before{inset:-22px -30px;background:#f7f0e1;filter:url(#roughedge)}
+  /* scrap: a torn piece of paper */
+  body[data-bg="scrap"] main.note{transform:rotate(-1.3deg);filter:drop-shadow(0 10px 18px rgba(40,30,10,.2))}
+  body[data-bg="scrap"] main.note::before{inset:0;background:#f8f2e5;clip-path:var(--tear)}
+
+  body[data-font] main.note .hello{font:400 10.5px/var(--rule) 'IBM Plex Mono',monospace;color:var(--txtSoft);margin:0}
+  body[data-font] main.note h1{font:700 46px/calc(var(--rule) * 2) 'Kalam',cursive;font-style:normal;margin:0;color:var(--txt);letter-spacing:0}
+  body[data-font] main.note .intro.hand p{font:400 19px/var(--rule) 'Kalam',cursive;margin:0 0 var(--rule);color:var(--txt)}
+  body[data-font] main.note .say{font:400 11px/var(--rule) 'IBM Plex Mono',monospace;color:var(--txtSoft);margin:0}
+  main.note .say a:hover{color:var(--txt)}
+  @media (max-width:760px){ main.note{left:auto;top:auto;width:auto;margin:10vh 6vw 0} }
+
+  /* ---------- photo: a small print tucked into the corner of the note ---------- */
+  .photo{float:right;position:relative;width:132px;margin:-56px -58px 10px 18px;transform:rotate(3.5deg);
+    padding:7px 7px 22px;background:#fbf8f0;box-shadow:0 1px 2px rgba(0,0,0,.1), 0 10px 22px rgba(40,30,10,.2)}
+  .photo img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;filter:sepia(.18) saturate(.85) contrast(.96)}
+  body[data-pv="etoile"] .photo img{filter:sepia(.25) saturate(.8) brightness(.88)}
+  #photoFrame{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+  #photoFrame path{fill:none;stroke:#2a2622;stroke-linecap:round;stroke-linejoin:round}
+  @media (max-width:760px){ .photo{width:104px;margin:-46px -24px 8px 14px} }
+
+  /* ---------- no paper: draw straight onto the wall ---------- */
+  #annot{position:fixed;left:0;top:0;pointer-events:none;z-index:3;overflow:visible}
+  #annot path{fill:none;stroke:var(--txt,#1f1c19);stroke-linecap:round;stroke-linejoin:round}
+  body.pastel #annot{filter:url(#chalk)}
+  body.pastel #annot path.p0{stroke:var(--s0);stroke-width:2.2px}
+  body.pastel #annot path.p1{stroke:var(--s1);stroke-width:3px;opacity:.75}
+  body.pastel #annot path.p2{stroke:var(--s2);stroke-width:2.4px;opacity:.6}
+  body[data-pv="etoile"][data-bg="annotate"] main.note,
+  body[data-pv="etoile"][data-bg="neon"] main.note{--txt:#f6ead2;--txtSoft:#bdb39a}
+  body[data-bg="annotate"] main.note h1{font-size:58px !important}
+  body[data-bg="annotate"] .photo, body[data-bg="neon"] .photo{float:none;position:absolute;left:calc(100% - 6px);top:-84px;width:120px;margin:0;transform:rotate(4deg)}
+  body[data-bg="annotate"] main.note h1, body[data-bg="neon"] main.note h1{white-space:nowrap;margin-bottom:14px !important}
+  /* neon: the name is a glass tube sign hung on the wall — unlit by day, glowing when the lamp is off */
+  body[data-bg="neon"] main.note h1{color:var(--s1) !important;font-weight:400 !important;font-size:60px !important;
+    text-shadow:0 0 1px var(--s0), 0 1px 0 rgba(0,0,0,.15)}
+  body[data-bg="neon"][data-pv="etoile"] main.note h1{color:#fff3dc !important;
+    text-shadow:0 0 4px #fff0d0, 0 0 10px #f5b85e, 0 0 22px #f5b85e, 0 0 44px rgba(245,140,60,.55)}
+
+  /* ---------- phones ---------- */
+  @media (max-width:760px){
+    html, body{height:auto;min-height:100%}
+    body{overflow-x:hidden;overflow-y:visible}
+    #lamp{position:absolute;right:5vw}
+    main.note{position:relative;margin:9vh 7vw 0 !important;padding:0 !important;width:auto !important}
+    body[data-bg="annotate"] .photo, body[data-bg="neon"] .photo{position:relative;left:auto;top:auto;display:block;width:112px;margin:0 0 26px 4px;transform:rotate(-4deg)}
+    body[data-font] main.note h1{font-size:44px !important;margin-bottom:10px !important}
+    body[data-font] main.note .intro.hand p{font-size:17.5px;line-height:30px;margin-bottom:22px}
+    body[data-font] main.note .say{line-height:26px}
+    #fig{height:auto;width:92%;margin:4px auto 34px;display:block;position:relative;right:auto;bottom:auto;overflow:hidden}
+    body::before{background:radial-gradient(ellipse 80vw 30vh at 50% 100%, var(--glow), transparent 70%)}
+  }
+</style>
+</head>
+<body data-font="fraunces" data-hand="kalam">
+
+<div id="lamp" title="lights" role="button" aria-label="lights">
+  <svg width="70" height="150" viewBox="0 0 70 150">
+    <circle class="bulb" cx="35" cy="64" r="5"/>
+    <g id="lampBody"></g>
+    <g class="chain" id="lampChain"></g>
+  </svg>
+</div>
+<svg width="0" height="0" style="position:absolute"><filter id="roughedge" x="-12%" y="-12%" width="124%" height="124%">
+  <feTurbulence type="fractalNoise" baseFrequency=".022" numOctaves="3" seed="8" result="w"/>
+  <feDisplacementMap in="SourceGraphic" in2="w" scale="34" xChannelSelector="R" yChannelSelector="G" result="d"/>
+  <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="2" result="g"/>
+  <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -.9 1.25" result="h"/>
+  <feComposite in="d" in2="h" operator="in"/>
+</filter></svg>
+<svg width="0" height="0" style="position:absolute"><filter id="chalk" x="-5%" y="-5%" width="110%" height="110%">
+  <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="g"/>
+  <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.3 1.35" result="holes"/>
+  <feComposite in="SourceGraphic" in2="holes" operator="in"/>
+</filter></svg>
+
+<main class="note">
+  <svg id="noteFrame"><g id="noteLines"></g></svg>
+  <figure class="photo"><img src="img/me.jpg" alt="Woosik reading a book"><svg id="photoFrame"><g id="photoLines"></g></svg></figure>
+  <div class="hello">hello —</div>
+  <h1><span id="mkName">Woosik Kim</span></h1>
+  <div class="intro hand">
+    <p>I'm a master's student in the Robotics &amp; Vision Lab at KAIST.</p>
+    <p>I make <span id="mkArt">artificial things</span> that people can <span id="mkFeel">feel something for</span>.</p>
+    <p>I believe the value of making artificial things feel human is that, along the way, we rediscover our own lives.</p>
+  </div>
+  <div class="say">say hi — <a href="mailto:woosik@kaist.ac.kr">woosik@kaist.ac.kr</a> · <a href="https://www.linkedin.com/in/iam-woosik-kim/" target="_blank" rel="noopener">linkedin</a> · <a href="https://github.com/well-balanced" target="_blank" rel="noopener">github</a> · <a href="https://scholar.google.com/citations?user=YNhDuhUAAAAJ" target="_blank" rel="noopener">scholar</a></div>
+</main>
+
+<svg id="annot"><g id="annotLines"></g></svg>
+<svg id="fig" viewBox="0 0 320 560" aria-label="a hand-drawn robot dancing in a glass case"><g id="draw"></g></svg>
+
+<script>
+/* ---------- themes (all kept in CSS; only sage ↔ étoile are exposed through the lamp) ----------
+   to preview the others, add ?theme=dark | light | pastel&pv=paper|ivory|buff|grey to the URL */
+const body = document.body;
+function setTheme(t){ body.classList.toggle('light', t === 'light'); body.classList.toggle('pastel', t === 'pastel'); }
+function setPv(v){ body.dataset.pv = v; }
+const qs = new URLSearchParams(location.search);
+setTheme(qs.get('theme') || 'pastel');
+setPv(qs.get('pv') || localStorage.getItem('lamp') || 'sage');
+// font is Fraunces (set on <body>); other sets stay in CSS — preview with ?font=cormorant|garamond|newsreader|hand|mono
+if (qs.has('font')) body.dataset.font = qs.get('font');
+// handwriting is Kalam; other candidates stay in CSS — preview with ?hand=caveat|patrick|shadows|reenie|...
+if (qs.has('hand')) body.dataset.hand = qs.get('hand');
+// backdrop is the pen sketch; other backdrops (glow|card|wash|scrap) stay in CSS — preview with ?bg=
+body.dataset.sk = qs.get('sk') || 'box';
+// text is annotated straight on the wall; other treatments stay in code — preview with ?bg=sketch|neon|glow|card|wash|scrap
+body.dataset.bg = qs.get('bg') || 'annotate';
+// torn edges for the "scrap" backdrop
+(function tear(){
+  const pts = [], n = 22;
+  for (let i = 0; i <= n; i++) pts.push(`${(i / n * 100).toFixed(1)}% ${(Math.random() * 7).toFixed(1)}px`);
+  pts.push(`calc(100% - ${(Math.random() * 3).toFixed(1)}px) 50%`);
+  for (let i = n; i >= 0; i--) pts.push(`${(i / n * 100).toFixed(1)}% calc(100% - ${(Math.random() * 8).toFixed(1)}px)`);
+  pts.push(`${(Math.random() * 3).toFixed(1)}px 50%`);
+  document.querySelector('main.note').style.setProperty('--tear', `polygon(${pts.join(',')})`);
+})();
+const mobile = () => matchMedia('(max-width:760px)').matches;
+// on phones the robot steps into the text, right after "…feel something for."
+const figEl = document.getElementById('fig'), figHome = [figEl.parentNode, figEl.nextSibling];
+function placeFloor(){
+  const intro = document.querySelector('main.note .intro');
+  if (mobile()) {
+    if (figEl.parentNode !== intro) intro.insertBefore(figEl, intro.querySelectorAll('p')[2]);
+    figEl.setAttribute('viewBox', '0 -6 320 432');            // case + wooden top only, no tall base
+    body.style.setProperty('--fat', '100%');                   // no floor band on phones
+  } else {
+    if (figEl.parentNode !== figHome[0]) figHome[0].insertBefore(figEl, figHome[1]);
+    figEl.setAttribute('viewBox', '0 0 320 560');
+    body.style.removeProperty('--fat');
+  }
+}
+placeFloor();
+// phones have no mouse: scrolling down the page plays the dance instead
+addEventListener('scroll', () => {
+  if (!mobile()) return;
+  const max = document.documentElement.scrollHeight - innerHeight;
+  target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : .25;
+}, { passive: true });
+addEventListener('resize', placeFloor); addEventListener('load', placeFloor); setTimeout(placeFloor, 300);
+const lamp = document.getElementById('lamp');
+lamp.onclick = () => {
+  lamp.classList.add('pull'); setTimeout(() => lamp.classList.remove('pull'), 300);
+  const next = body.dataset.pv === 'etoile' ? 'sage' : 'etoile';
+  setPv(next); localStorage.setItem('lamp', next);
+};
+
+/* ---------- sketchy line engine: every stroke is drawn 3× with jitter + overshoot, and "boils" ---------- */
+let tick = 0;
+setInterval(() => tick++, 150);
+function rnd(a, b, c, d){
+  let h = Math.imul(a + 1, 374761393) ^ Math.imul(b + 7, 668265263) ^ Math.imul(c + 13, 2246822519) ^ Math.imul(d + 3, 3266489917);
+  h = Math.imul(h ^ (h >>> 15), 2246822507); h ^= h >>> 13;
+  return ((h >>> 0) % 10000) / 10000;
+}
+const WIDTH = [1.7, 1.05, .7], OPAC = [.95, .55, .38];
+let out = '';
+function sketch(pts, id, j = 2.4, over = 7, passes = 3){
+  for (let p = 0; p < passes; p++) {
+    const q = pts.map((v, i) => [v[0] + (rnd(id, p, i * 2, tick) - .5) * 2 * j, v[1] + (rnd(id, p, i * 2 + 1, tick) - .5) * 2 * j]);
+    const ext = (a, b, o) => { const dx = a[0] - b[0], dy = a[1] - b[1], d = Math.hypot(dx, dy) || 1; return [a[0] + dx / d * o, a[1] + dy / d * o]; };
+    q[0] = ext(q[0], q[1], over * rnd(id, p, 99, tick));
+    q[q.length - 1] = ext(q[q.length - 1], q[q.length - 2], over * rnd(id, p, 98, tick));
+    let d = `M${q[0][0].toFixed(1)} ${q[0][1].toFixed(1)}`;
+    if (q.length === 2) d += `L${q[1][0].toFixed(1)} ${q[1][1].toFixed(1)}`;
+    else {
+      for (let i = 1; i < q.length - 1; i++) {
+        const m = [(q[i][0] + q[i + 1][0]) / 2, (q[i][1] + q[i + 1][1]) / 2];
+        d += `Q${q[i][0].toFixed(1)} ${q[i][1].toFixed(1)} ${m[0].toFixed(1)} ${m[1].toFixed(1)}`;
+      }
+      const l = q[q.length - 1]; d += `L${l[0].toFixed(1)} ${l[1].toFixed(1)}`;
+    }
+    out += `<path class="p${p}" d="${d}" stroke-width="${WIDTH[p]}" opacity="${OPAC[p]}"/>`;
+  }
+}
+const ring = (cx, cy, rx, ry, n = 14, turns = 1.15, rot = 0) =>
+  Array.from({ length: Math.round(n * turns) + 1 }, (_, i) => { const a = i / n * Math.PI * 2 + rot; return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; });
+
+/* ---------- poses (robot joints); mouse x scrubs through them ---------- */
+const POSES = [
+  // arabesque
+  {head:[118,92],neck:[130,116],shL:[120,122],shR:[146,118],elL:[84,112],hL:[46,100],elR:[182,100],hR:[226,84],hip:[160,200],hipL:[152,205],hipR:[168,200],kL:[152,290],fL:[152,380],kR:[222,192],fR:[286,176]},
+  // "little dancer": 4th position, hands behind, chin up
+  {head:[146,66],neck:[150,100],shL:[132,110],shR:[168,110],elL:[120,150],hL:[142,186],elR:[180,150],hR:[158,186],hip:[150,200],hipL:[140,205],hipR:[160,205],kL:[132,290],fL:[120,378],kR:[170,286],fR:[192,372]},
+  // bras bas, first position
+  {head:[150,70],neck:[150,100],shL:[132,110],shR:[168,110],elL:[122,150],hL:[138,192],elR:[178,150],hR:[162,192],hip:[150,200],hipL:[140,205],hipR:[160,205],kL:[140,290],fL:[136,380],kR:[160,290],fR:[164,380]},
+  // à la seconde, demi-plié
+  {head:[150,80],neck:[150,110],shL:[132,120],shR:[168,120],elL:[96,128],hL:[56,142],elR:[204,128],hR:[244,142],hip:[150,210],hipL:[140,214],hipR:[160,214],kL:[118,296],fL:[110,380],kR:[182,296],fR:[190,380]},
+  // en couronne, relevé
+  {head:[150,62],neck:[150,92],shL:[132,102],shR:[168,102],elL:[112,66],hL:[142,36],elR:[188,66],hR:[158,36],hip:[150,192],hipL:[141,197],hipR:[159,197],kL:[146,284],fL:[148,370],kR:[154,284],fR:[152,370]},
+];
+const lerp = (a, b, t) => a + (b - a) * t;
+function poseAt(t){
+  t = Math.max(0, Math.min(POSES.length - 1, t));
+  const i = Math.min(POSES.length - 2, Math.floor(t)), f = t - i, s = f * f * (3 - 2 * f), A = POSES[i], B = POSES[i + 1], P = {};
+  for (const k in A) P[k] = T([lerp(A[k][0], B[k][0], s), lerp(A[k][1], B[k][1], s)]);
+  return P;
+}
+const T = p => [p[0] * .92 + 22, p[1] * .92 + 50];           // place the dancer inside the case
+const add = (a, b, k = 1) => [a[0] + b[0] * k, a[1] + b[1] * k];
+
+/* ---------- eyes ---------- */
+const svg = document.getElementById('fig');
+let mouse = [160, 200], target = .25, cur = .25, gaze = [0, 0], headScr = [0, 0, 1];
+addEventListener('pointermove', e => {
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const m = pt.matrixTransform(svg.getScreenCTM().inverse()); mouse = [m.x, m.y];
+  target = Math.min(1, Math.max(0, e.clientX / innerWidth));
+});
+
+/* ---------- draw ---------- */
+function frame(){
+  cur += (target - cur) * .06;
+  const P = poseAt(cur * (POSES.length - 1));
+  out = '';
+
+  // the glass case + plinth (like the Little Dancer's vitrine)
+  sketch([[24, 16], [296, 16]], 1, 1.6, 9); sketch([[24, 16], [24, 404]], 2, 1.6, 9); sketch([[296, 16], [296, 404]], 3, 1.6, 9);
+  sketch([[24, 16], [42, 4], [314, 4]], 4, 1.4, 6, 2); sketch([[296, 16], [314, 4], [314, 392], [296, 404]], 5, 1.4, 6, 2);
+  sketch([[60, 70], [104, 26]], 6, 1, 3, 1); sketch([[70, 96], [128, 38]], 7, 1, 3, 1);         // reflections on the glass
+  sketch([[12, 404], [308, 404], [308, 420], [12, 420], [12, 404]], 8, 1.4, 6);              // wooden top
+  sketch([[34, 420], [34, 572]], 9, 1.6, 4); sketch([[286, 420], [286, 572]], 10, 1.6, 4);    // base
+  sketch([[70, 440], [120, 440]], 11, 1, 3, 1);                                                // the little label
+
+  // legs + feet
+  sketch([P.hipL, P.kL, P.fL], 20); sketch([P.hipR, P.kR, P.fR], 21);
+  sketch([P.fL, add(P.fL, [-11, 2])], 22, 1.5, 3); sketch([P.fR, add(P.fR, [11, 2])], 23, 1.5, 3);
+
+  // torso (a little trapezoid body) + chest bolt
+  const hipL2 = add(P.hipL, [-6, 0]), hipR2 = add(P.hipR, [6, 0]);
+  sketch([P.shL, P.shR, hipR2, hipL2, P.shL], 24);
+  const c = [(P.shL[0] + P.shR[0] + P.hipL[0] + P.hipR[0]) / 4, (P.shL[1] + P.shR[1] + P.hipL[1] + P.hipR[1]) / 4];
+  sketch(ring(c[0], c[1], 4.5, 4.5, 8, 1.2), 25, 1, 2, 2);
+
+  // tutu, rotated with the torso
+  const ang = Math.atan2(P.neck[1] - P.hip[1], P.neck[0] - P.hip[0]) + Math.PI / 2;
+  const R = (x, y) => [P.hip[0] + x * Math.cos(ang) - y * Math.sin(ang), P.hip[1] + x * Math.sin(ang) + y * Math.cos(ang)];
+  sketch(ring(0, 6, 50, 9, 16, 1.1).map(v => R(v[0], v[1])), 26, 2.4, 6);
+  const ruff = []; for (let x = -54, k = 0; x <= 54; x += 7, k++) ruff.push(R(x, k % 2 ? 20 : 9));
+  sketch(ruff, 27, 2.2, 5);
+  const ruff2 = []; for (let x = -46, k = 0; x <= 46; x += 8, k++) ruff2.push(R(x, k % 2 ? 14 : 4));
+  sketch(ruff2, 28, 2, 4, 2);
+  for (let x = -48, k = 0; x <= 48; x += 6, k++) {
+    const a = R(x * .6 + (rnd(50, k, 0, tick) - .5) * 4, -2), b = R(x + (rnd(50, k, 1, tick) - .5) * 6, 16 + rnd(50, k, 2, tick) * 5);
+    out += `<path class="hatch" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}" style="stroke:var(--h${k % 3})"/>`;
+  }
+
+  // arms + hands
+  sketch([P.shL, P.elL, P.hL], 30); sketch([P.shR, P.elR, P.hR], 31);
+  sketch(ring(P.hL[0], P.hL[1], 4, 4, 8, 1.2), 32, 1, 2, 2); sketch(ring(P.hR[0], P.hR[1], 4, 4, 8, 1.2), 33, 1, 2, 2);
+
+  // neck + box head (rotated)
+  const ux = P.head[0] - P.neck[0], uy = P.head[1] - P.neck[1], ul = Math.hypot(ux, uy) || 1, u = [ux / ul, uy / ul];
+  const H = add(P.neck, u, 34), ha = Math.atan2(u[1], u[0]) + Math.PI / 2;
+  { const m = svg.getScreenCTM(); headScr = [m.a * H[0] + m.c * H[1] + m.e, m.b * H[0] + m.d * H[1] + m.f, m.a]; }
+  const L = (x, y) => [H[0] + x * Math.cos(ha) - y * Math.sin(ha), H[1] + x * Math.sin(ha) + y * Math.cos(ha)];
+  sketch([P.neck, add(P.neck, u, 11)], 34, 1.5, 3);
+  sketch([[-24, -24], [24, -24], [30, -18], [30, 18], [24, 24], [-24, 24], [-30, 18], [-30, -18], [-24, -24]].map(v => L(...v)), 35, 2, 7);
+  sketch([L(0, -24), L(0, -40)], 36, 1.4, 3); sketch(ring(0, -45, 5, 5, 8, 1.2).map(v => L(...v)), 37, 1, 2, 2);
+  sketch([L(-5, 13), L(0, 15.5), L(5, 13)], 38, .8, 2, 2);
+  // both eyes share one gaze that drifts slowly toward the cursor (no snapping)
+  const C = L(0, -3), gx = mouse[0] - C[0], gy = mouse[1] - C[1], gd = Math.hypot(gx, gy) || 1, gk = Math.min(1, gd / 220) * 3.4;
+  gaze[0] += (gx / gd * gk - gaze[0]) * .035;
+  gaze[1] += (gy / gd * gk - gaze[1]) * .035;
+  let pupils = '';
+  for (const [ex, ey, id] of [[-13, -3, 40], [13, -3, 41]]) {
+    sketch(ring(ex, ey, 9.5, 9.5, 12, 1.2).map(v => L(...v)), id, .5, 2);   // calmer eye outline
+    const E = L(ex, ey);
+    pupils += `<circle class="pupil" cx="${(E[0] + gaze[0]).toFixed(2)}" cy="${(E[1] + gaze[1]).toFixed(2)}" r="3.6"/>`;
+  }
+
+  document.getElementById('draw').innerHTML = out + pupils;
+
+  // the lamp, in the same loose line
+  out = '';
+  sketch([[35, -4], [35, 31]], 60, 1, 2, 2);
+  sketch([[11, 60], [13, 44], [22, 34], [35, 31], [48, 34], [57, 44], [59, 60]], 61, 1.3, 4);
+  sketch([[8, 60], [35, 63], [62, 60]], 62, 1.2, 5);
+  const body1 = out; out = '';
+  sketch([[46, 60], [46.5, 80], [45.5, 100], [46, 113]], 63, 1, 2, 2);
+  sketch(ring(46, 118, 3.6, 4.2, 9, 1.25), 64, .7, 1, 2);
+  document.getElementById('lampBody').innerHTML = body1;
+  document.getElementById('lampChain').innerHTML = out;
+
+  // a pen outline + a strip of drawn tape on the photo
+  {
+    const ph = document.querySelector('.photo'), pw = ph.offsetWidth, phh = ph.offsetHeight;
+    document.getElementById('photoFrame').setAttribute('viewBox', `0 0 ${pw} ${phh}`);
+    out = '';
+    sketch([[-2, 0], [pw + 2, -1]], 200, 1, 6, 2); sketch([[pw, -2], [pw + 1, phh + 2]], 201, 1, 6, 2);
+    sketch([[pw + 2, phh], [-2, phh + 1]], 202, 1, 6, 2); sketch([[0, phh + 2], [-1, -2]], 203, 1, 6, 2);
+    sketch([[pw * .5 - 26, -12], [pw * .5 + 26, -6], [pw * .5 + 23, 8], [pw * .5 - 29, 2], [pw * .5 - 26, -12]], 204, .8, 3, 2);
+    document.getElementById('photoLines').innerHTML = out;
+  }
+
+  // the pen box around the text (only shown for the "sketch" backdrop)
+  if (body.dataset.bg === 'sketch') {
+    const note = document.querySelector('main.note'), w = note.offsetWidth, h = note.offsetHeight;
+    document.getElementById('noteFrame').setAttribute('viewBox', `0 0 ${w} ${h}`);
+    out = '';
+    const k = body.dataset.sk;
+    const box = (id, o = 0) => {
+      sketch([[4 - o, 6 - o], [w * .5, 3 - o], [w - 5 + o, 7 - o]], id, 1.6, 12);
+      sketch([[w - 6 + o, 3 - o], [w - 3 + o, h * .5], [w - 7 + o, h - 4 + o]], id + 1, 1.6, 12);
+      sketch([[w - 3 + o, h - 6 + o], [w * .5, h - 2 + o], [5 - o, h - 7 + o]], id + 2, 1.6, 12);
+      sketch([[6 - o, h - 3 + o], [3 - o, h * .5], [7 - o, 4 - o]], id + 3, 1.6, 12);
+    };
+    if (k === 'box') box(70);
+    else if (k === 'double') { box(70); box(80, 9); }
+    else if (k === 'case') {                       // same construction as the robot's glass case
+      box(70);
+      sketch([[4, 6], [22, -10], [w + 14, -10]], 90, 1.4, 8, 2);
+      sketch([[w - 6, 4], [w + 14, -10], [w + 14, h - 16], [w - 6, h - 3]], 91, 1.4, 8, 2);
+      sketch([[30, 40], [64, 8]], 92, 1, 3, 1); sketch([[36, 62], [86, 14]], 93, 1, 3, 1);
+    }
+    else if (k === 'corners') {
+      const L = 34;
+      sketch([[4, 4 + L], [4, 4], [4 + L, 4]], 70, 1.4, 8);
+      sketch([[w - 4 - L, 4], [w - 4, 4], [w - 4, 4 + L]], 71, 1.4, 8);
+      sketch([[w - 4, h - 4 - L], [w - 4, h - 4], [w - 4 - L, h - 4]], 72, 1.4, 8);
+      sketch([[4 + L, h - 4], [4, h - 4], [4, h - 4 - L]], 73, 1.4, 8);
+    }
+    else if (k === 'hatch') {                      // box + a pen-hatched shadow
+      box(70);
+      for (let y = 22, i = 0; y < h + 8; y += 9, i++) sketch([[w + 1, y], [w + 13, y - 12]], 100 + i, .8, 2, 1);
+      for (let x = 22, i = 0; x < w + 8; x += 9, i++) sketch([[x, h + 13], [x + 12, h + 1]], 160 + i, .8, 2, 1);
+    }
+    else if (k === 'tape') {                       // box + two pieces of tape, drawn
+      box(70);
+      const tapeAt = (cx, cy, a, id) => {
+        const c = Math.cos(a), s2 = Math.sin(a), pts = [[-34, -10], [34, -10], [34, 10], [-34, 10], [-34, -10]];
+        sketch(pts.map(([x, y]) => [cx + x * c - y * s2, cy + x * s2 + y * c]), id, 1.1, 4, 2);
+        for (let t = -26, i = 0; t <= 26; t += 9, i++)
+          sketch([[t, -8], [t + 6, 8]].map(([x, y]) => [cx + x * c - y * s2, cy + x * s2 + y * c]), id + 1 + i, .6, 1, 1);
+      };
+      tapeAt(w * .5, 4, .05, 120); tapeAt(w - 10, h - 14, -.7, 140);
+    }
+    else if (k === 'oneline') {                    // the whole box in one unbroken line, with a loop and a tail
+      const loop = ring(w - 12, 12, 9, 9, 10, 1.05, -Math.PI / 2).map(([x, y]) => [x + 6, y - 8]);
+      sketch([[-30, -22], [-8, -6], [6, 5], [w * .35, 3], [w * .7, 6], [w - 10, 4], ...loop, [w - 4, 18], [w - 3, h * .5], [w - 6, h - 5],
+              [w * .6, h - 2], [w * .25, h - 5], [6, h - 4], [3, h * .6], [5, h * .25], [5, 26], [16, 36], [26, 30], [22, 22]], 70, .9, 6, 2);
+    }
+    else if (k === 'scribble') {                   // tangled, gone-over-many-times pen edges
+      box(70); box(80, 2); box(90, -2);
+    }
+    else if (k === 'tulle') {                      // ruffled top & bottom, like the edge of a tutu
+      const scal = (y0, dir, id) => { const pts = []; for (let x = 0, i = 0; x <= w; x += 13, i++) pts.push([x, y0 + (i % 2 ? 7 : -2) * dir]); sketch(pts, id, 1.2, 6); };
+      scal(4, 1, 70); scal(12, 1, 71); scal(h - 4, -1, 72); scal(h - 12, -1, 73);
+      sketch([[4, 4], [3, h * .5], [5, h - 4]], 74, 1.4, 8); sketch([[w - 4, 4], [w - 3, h * .5], [w - 5, h - 4]], 75, 1.4, 8);
+    }
+    else if (k === 'stage') {                      // a little proscenium: drape on top, footlights below
+      box(70);
+      sketch([[4, 6], [w * .18, 34], [w * .36, 10], [w * .5, 26], [w * .64, 10], [w * .82, 34], [w - 4, 6]], 100, 1.4, 6);
+      sketch([[4, 6], [10, h * .35], [26, h * .4]], 101, 1.2, 4, 2); sketch([[w - 4, 6], [w - 10, h * .35], [w - 26, h * .4]], 102, 1.2, 4, 2);
+      for (let x = 34, i = 0; x < w - 20; x += 46, i++) sketch(ring(x, h + 8, 9, 6, 8, .5, Math.PI), 110 + i, .7, 2, 2);
+    }
+    else if (k === 'hanging') {                    // hung from the ceiling on two strings, like the lamp
+      box(70);
+      const top = -note.getBoundingClientRect().top - 4;
+      sketch([[w * .2, top], [w * .2 + 2, 4]], 100, .8, 2, 2); sketch([[w * .8, top], [w * .8 - 2, 4]], 101, .8, 2, 2);
+      sketch(ring(w * .2 + 2, 8, 3.5, 3.5, 8, 1.2), 102, .5, 1, 2); sketch(ring(w * .8 - 2, 8, 3.5, 3.5, 8, 1.2), 103, .5, 1, 2);
+    }
+    else if (k === 'brackets') {
+      sketch([[30, 2], [6, 4], [4, h * .5], [6, h - 4], [30, h - 2]], 70, 1.6, 8);
+      sketch([[w - 30, 2], [w - 6, 4], [w - 4, h * .5], [w - 6, h - 4], [w - 30, h - 2]], 71, 1.6, 8);
+    }
+    document.getElementById('noteLines').innerHTML = out;
+  }
+
+  // annotate / neon: marks drawn straight on the wall, in screen space
+  out = '';
+  const bg = body.dataset.bg;
+  if (bg === 'annotate' || bg === 'neon') {
+    const an = document.getElementById('annot'), vw = document.documentElement.clientWidth, vh = innerHeight;
+    an.setAttribute('width', vw); an.setAttribute('height', vh); an.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+  }
+  if (bg === 'annotate') {
+    const nm = document.getElementById('mkName').getBoundingClientRect();
+    const ar = document.getElementById('mkArt').getBoundingClientRect();
+    const fl = document.getElementById('mkFeel').getBoundingClientRect();
+    // a loose double underline under the name
+    sketch([[nm.left - 6, nm.bottom - 10], [nm.left + nm.width * .5, nm.bottom - 5], [nm.right + 10, nm.bottom - 12]], 300, 1.4, 10);
+    sketch([[nm.left + 14, nm.bottom - 1], [nm.right - 6, nm.bottom - 3]], 301, 1.2, 8, 2);
+    // a circle around "artificial things", a wavy line under "feel something for"
+    sketch(ring(ar.left + ar.width / 2, ar.top + ar.height / 2 + 1, ar.width / 2 + 10, ar.height / 2 + 6, 18, 1.12, -2.6), 302, 1.4, 6);
+    const wav = []; for (let x = fl.left, i = 0; x <= fl.right + 4; x += 7, i++) wav.push([x, fl.bottom + 1 + (i % 2 ? 2.5 : -1)]);
+    sketch(wav, 305, .8, 4);
+    if (mobile()) {                               // robot sits just below: the arrow swings round the right margin and down
+      const hx = headScr[0] + 40 * headScr[2], hy = headScr[1] - 18 * headScr[2];
+      const st = [ar.right + 10, ar.top + ar.height / 2], c1 = [Math.max(st[0], hx) + 40, (st[1] + hy) / 2];
+      const curve = []; for (let t = 0; t <= 1.001; t += .1) { const q = 1 - t; curve.push([q * q * st[0] + 2 * q * t * c1[0] + t * t * hx, q * q * st[1] + 2 * q * t * c1[1] + t * t * hy]); }
+      sketch(curve, 306, 1.2, 3);
+      const pv2 = curve[curve.length - 3], dx = hx - pv2[0], dy = hy - pv2[1], d = Math.hypot(dx, dy) || 1, ux2 = dx / d, uy2 = dy / d;
+      sketch([[hx - ux2 * 14 - uy2 * 8, hy - uy2 * 14 + ux2 * 8], [hx, hy], [hx - ux2 * 14 + uy2 * 8, hy - uy2 * 14 - ux2 * 8]], 307, .8, 2);
+    } else {
+    // an arrow that leaves the circle, runs along the blank line above, and swings over to the robot
+    const colR = document.querySelector('main.note').getBoundingClientRect().right - 30;
+    const y0 = ar.top - 15, hx = headScr[0] - 44 * headScr[2], hy = headScr[1];
+    const c1 = [(colR + hx) / 2, Math.min(y0, hy) - 50];
+    const curve = [[ar.right + 6, ar.top - 2], [ar.right + 18, y0], [colR, y0 - 2]];
+    for (let t = .1; t <= 1.001; t += .1) { const q = 1 - t; curve.push([q * q * colR + 2 * q * t * c1[0] + t * t * hx, q * q * y0 + 2 * q * t * c1[1] + t * t * hy]); }
+    sketch(curve, 303, 1.4, 4);
+    const pv2 = curve[curve.length - 3], dx = hx - pv2[0], dy = hy - pv2[1], d = Math.hypot(dx, dy) || 1, ux2 = dx / d, uy2 = dy / d;
+    sketch([[hx - ux2 * 16 - uy2 * 9, hy - uy2 * 16 + ux2 * 9], [hx, hy], [hx - ux2 * 16 + uy2 * 9, hy - uy2 * 16 - ux2 * 9]], 304, 1, 3);
+    }
+  }
+  if (bg === 'neon') {
+    const nm = document.getElementById('mkName').getBoundingClientRect();
+    // two hanging wires and a little transformer box, like a real neon sign
+    sketch([[nm.left + nm.width * .18, -4], [nm.left + nm.width * .18, nm.top + 6]], 310, .8, 2, 2);
+    sketch([[nm.right - nm.width * .18, -4], [nm.right - nm.width * .18, nm.top + 6]], 311, .8, 2, 2);
+    sketch([[nm.left - 10, nm.top + 6], [nm.right + 10, nm.top + 6]], 312, 1, 4, 2);
+    sketch([[nm.right + 18, nm.bottom - 14], [nm.right + 44, nm.bottom - 14], [nm.right + 44, nm.bottom + 4], [nm.right + 18, nm.bottom + 4], [nm.right + 18, nm.bottom - 14]], 313, .8, 3, 2);
+    sketch([[nm.right + 2, nm.bottom - 6], [nm.right + 18, nm.bottom - 6]], 314, .6, 2, 1);
+  }
+  document.getElementById('annotLines').innerHTML = out;
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

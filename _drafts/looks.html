@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Gaegu&family=IBM+Plex+Mono:wght@300;400&family=Instrument+Serif:ital@0;1&family=Nanum+Pen+Script&family=Space+Mono&family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3eee4; --ink:#2f2a26; --soft:#8a8178; --amber:#e9a85c; --wine:#8c2f39;
+    --serif:'Cormorant Garamond', Georgia, serif;
+    --hand:'Gaegu', 'Comic Sans MS', cursive;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+  }
+  :root{ --display:var(--serif); --stroke:2.4; }
+  /* ---------- looks ---------- */
+  body[data-look="gallery"]{ --paper:#2a221c; --ink:#ead8b8; --soft:#a08d72; --amber:#e3a24f; --wine:#c9a35a; --display:'Instrument Serif', serif; }
+  body[data-look="ink"]{ --paper:#ffffff; --ink:#0d0d0d; --soft:#9a9a9a; --wine:#0d0d0d; --display:'Instrument Serif', serif; --mono:'Space Mono', monospace; --stroke:3.6; }
+  body[data-look="blush"]{ --paper:#ecdccb; --ink:#3b2e28; --soft:#9a8270; --wine:#b4515a; --display:'Nanum Pen Script', cursive; --stroke:1.6; }
+  body[data-look="cellar"]{ --paper:#f1e3c8; --ink:#4a1c22; --soft:#a5735a; --wine:#d46a2a; --amber:#f0a040; --display:'Fraunces', serif; }
+  body.night{ --paper:#1a1613; --ink:#efe3cf; --soft:#9c8f7f; }
+  *{box-sizing:border-box} body.preload, body.preload *{transition:none !important}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:var(--mono); font-weight:300;
+    overflow:hidden; transition:background .8s ease, color .8s ease;
+    cursor:crosshair;
+  }
+  /* paper grain */
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:50; opacity:.35;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;
+  }
+  body.night::after{mix-blend-mode:screen;opacity:.12}
+
+  header{position:absolute;left:6vw;top:7vh;z-index:5}
+  h1{font-family:var(--display);font-style:italic;font-weight:400;font-size:clamp(44px,6.4vw,84px);margin:0;letter-spacing:-.01em}
+  .tag{font-size:12px;color:var(--soft);margin-top:6px;letter-spacing:.04em}
+
+  /* ---------- the partner ---------- */
+  #stageWrap{position:absolute;left:8vw;bottom:12vh;width:min(300px,34vw);z-index:5}
+  #bot{width:100%;height:auto;overflow:visible;cursor:pointer;display:block}
+  #bot .ink *{fill:none;stroke:var(--ink);stroke-width:var(--stroke);stroke-linecap:round;stroke-linejoin:round;transition:stroke .8s}
+  #bot .ink .white{fill:var(--paper);transition:fill .8s,stroke .8s}
+  #bot .ink .pupil{fill:var(--ink);stroke:none}
+  #bot .ghost{opacity:.33}
+  #bot .stage{display:none}
+  #bot .stage.on{display:inline}
+  #bot.hop{animation:hop .45s cubic-bezier(.3,1.6,.5,1)}
+  #bot.evolving{animation:shake .7s linear}
+  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px)}}
+  @keyframes shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-3px,1px) rotate(-2deg)}40%{transform:translate(3px,-1px) rotate(2deg)}60%{transform:translate(-2px,0) rotate(-1deg)}80%{transform:translate(2px,1px) rotate(1deg)}}
+  .spark line{animation:twinkle 1.4s ease-in-out infinite}
+  @keyframes twinkle{50%{opacity:.15}}
+  body.night #bot .ink .pupil{fill:var(--amber);filter:drop-shadow(0 0 4px var(--amber))}
+  /* indirect light under the partner — always on at night */
+  #stageWrap::before{
+    content:"";position:absolute;left:-40%;right:-40%;bottom:-30%;height:90%;z-index:-1;
+    background:radial-gradient(ellipse at 50% 80%, rgba(233,168,92,.38), rgba(233,168,92,0) 62%);
+    opacity:0;transition:opacity 1s;
+  }
+  body.night #stageWrap::before{opacity:1}
+
+  #bubble{
+    position:absolute;left:62%;top:-6%;font-family:var(--hand);font-size:22px;white-space:nowrap;
+    padding:4px 12px;border:1.6px solid var(--ink);border-radius:18px 20px 16px 22px;background:var(--paper);
+    opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;pointer-events:none;
+  }
+  #bubble.show{opacity:1;transform:none}
+  #meter{margin-top:14px;font-size:11px;color:var(--soft);display:flex;gap:10px;align-items:center;letter-spacing:.05em}
+  #meter .dots{display:flex;gap:6px}
+  #meter .dots i{width:7px;height:7px;border:1.3px solid var(--soft);border-radius:50%}
+  #meter .dots i.on{background:var(--ink);border-color:var(--ink)}
+  #hint{font-family:var(--hand);font-size:19px;color:var(--soft);margin-top:4px;transition:opacity .6s}
+
+  /* ---------- scattered links ---------- */
+  nav a{
+    position:absolute;z-index:5;color:var(--ink);text-decoration:none;font-size:13px;letter-spacing:.03em;
+    padding:4px 2px;cursor:pointer;transition:color .8s;
+  }
+  nav a svg{position:absolute;left:0;bottom:-4px;width:100%;height:8px;overflow:visible}
+  nav a svg path{fill:none;stroke:var(--soft);stroke-width:1.3;stroke-linecap:round;stroke-dasharray:140;stroke-dashoffset:140;transition:stroke-dashoffset .5s ease}
+  nav a:hover svg path{stroke-dashoffset:0}
+  nav a.seen::after{content:"✓";font-family:var(--hand);font-size:16px;color:var(--wine);margin-left:6px}
+  body.night nav a.seen::after{color:var(--amber)}
+  nav a .note{display:block;font-size:10px;color:var(--soft)}
+
+  /* ---------- lamp cord ---------- */
+  #cord{position:absolute;right:7vw;top:0;z-index:60;cursor:pointer;text-align:center}
+  #cord svg{display:block;transition:transform .35s cubic-bezier(.3,1.7,.5,1)}
+  #cord.pull svg{transform:translateY(18px)}
+  #cord span{font-family:var(--hand);font-size:17px;color:var(--soft)}
+  #cord line,#cord circle{stroke:var(--ink);stroke-width:1.6;fill:var(--paper);transition:stroke .8s,fill .8s}
+
+  /* ---------- darkness: only the cursor + cove light reveal the room ---------- */
+  #dark{
+    position:fixed;inset:0;z-index:20;pointer-events:none;opacity:0;transition:opacity 1s;
+    background:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%), rgba(255,190,120,.10) 0, rgba(14,11,9,.0) 30%, rgba(14,11,9,.86) 75%);
+  }
+  body.night #dark{opacity:1}
+  /* keep the partner and lamp above the dark */
+  body.night #stageWrap{z-index:30}
+
+  canvas#fx{position:fixed;inset:0;z-index:40;pointer-events:none}
+
+  /* ---------- paper panel ---------- */
+  #panel{
+    position:fixed;top:6vh;right:5vw;width:min(440px,88vw);max-height:86vh;overflow:auto;z-index:70;
+    background:var(--paper);border:1.6px solid var(--ink);padding:30px 30px 34px;
+    box-shadow:6px 8px 0 rgba(0,0,0,.08);
+    transform:translateX(120%) rotate(3deg);transition:transform .55s cubic-bezier(.2,.9,.3,1), background .8s;
+    cursor:auto;
+  }
+  #panel.open{transform:translateX(0) rotate(-.8deg)}
+  #panel h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:40px;margin:0 0 6px}
+  #panel p,#panel li{font-size:13px;line-height:1.75}
+  #panel .hand{font-family:var(--hand);font-size:19px;color:var(--soft)}
+  #panel ul{padding-left:0;list-style:none}
+  #panel li{border-bottom:1px dashed color-mix(in srgb,var(--soft) 50%,transparent);padding:8px 0}
+  #panel li b{font-weight:400}
+  #panel .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  #panel .frame{aspect-ratio:3/4;border:1.4px solid var(--soft);display:grid;place-items:center;font-family:var(--hand);color:var(--soft);font-size:16px}
+  #panel .frame:nth-child(odd){transform:rotate(-1.2deg)} #panel .frame:nth-child(even){transform:rotate(1deg)}
+  #close{position:absolute;right:16px;top:12px;font-family:var(--hand);font-size:26px;background:none;border:0;color:var(--ink);cursor:pointer}
+
+  /* gallery: framed links + permanent cove light */
+  body[data-look="gallery"] #stageWrap::before{opacity:.8}
+  body[data-look="gallery"] nav a{border:1px solid var(--wine);padding:8px 12px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4px var(--wine)}
+  body[data-look="gallery"] nav a svg{display:none}
+  body[data-look="gallery"] h1{font-size:clamp(48px,7vw,96px)}
+  /* ink: big title, uppercase mono links, no grain */
+  body[data-look="ink"] h1{font-style:normal;font-size:clamp(56px,9vw,128px);letter-spacing:-.03em;line-height:.9}
+  body[data-look="ink"] nav a{text-transform:uppercase;font-size:12px;letter-spacing:.12em}
+  body[data-look="ink"]::after{opacity:0}
+  /* blush: everything feels hand-written */
+  body[data-look="blush"] h1{font-style:normal;font-size:clamp(60px,8vw,110px)}
+  body[data-look="blush"] nav a{font-family:var(--hand);font-size:22px}
+  body[data-look="blush"] .tag{font-family:var(--hand);font-size:18px}
+  /* cellar: wine-label feel */
+  body[data-look="cellar"] h1{font-weight:300;font-size:clamp(50px,7vw,100px)}
+  body[data-look="cellar"] nav a{font-family:var(--display);font-style:italic;font-size:19px}
+  body[data-look="cellar"] nav a .note{font-family:var(--mono);font-style:normal}
+  body[data-look="cellar"] header::after{content:"— cuvée 2026 · unfiltered —";display:block;font-size:11px;letter-spacing:.2em;color:var(--wine);margin-top:10px}
+
+  #looks{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:80;display:flex;gap:4px;font-size:11px;
+    background:color-mix(in srgb,var(--paper) 85%,transparent);border:1px solid var(--soft);border-radius:20px;padding:4px 6px;cursor:auto}
+  #looks button{all:unset;cursor:pointer;padding:3px 10px;border-radius:14px;color:var(--soft);font-family:'IBM Plex Mono',monospace}
+  #looks button.on{background:var(--ink);color:var(--paper)}
+
+  footer{position:absolute;right:6vw;bottom:5vh;font-size:11px;color:var(--soft);z-index:5}
+  footer a{color:var(--soft);cursor:pointer;text-decoration:underline dotted}
+
+  @media (max-width:760px){
+    body{overflow:auto}
+    header{position:relative;left:auto;top:auto;padding:9vh 7vw 0}
+    #stageWrap{position:relative;left:auto;bottom:auto;width:62vw;margin:6vh auto 0}
+    nav{display:flex;flex-direction:column;gap:14px;padding:6vh 10vw 14vh}
+    nav a{position:relative !important;left:auto !important;top:auto !important;transform:none !important;align-self:flex-start}
+    footer{position:relative;right:auto;bottom:auto;padding:0 10vw 6vh}
+  }
+  @media (prefers-reduced-motion:reduce){ .spark line{animation:none} }
+</style>
+</head>
+<body class="preload">
+
+<div id="looks"><button data-l="paper">1 paper</button><button data-l="gallery">2 gallery</button><button data-l="ink">3 ink</button><button data-l="blush">4 blush</button><button data-l="cellar">5 cellar</button></div>
+
+<header>
+  <h1>Your Name</h1>
+  <div class="tag">robotics researcher · draws in lines · looks for fireworks</div>
+</header>
+
+<div id="stageWrap">
+  <div id="bubble">…?</div>
+  <svg id="bot" viewBox="0 0 220 270" aria-label="a small hand-drawn robot companion">
+    <defs>
+      <filter id="pencil" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence id="t1" type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="n"/>
+        <feDisplacementMap id="d1" in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="pencil2" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence id="t2" type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" result="n"/>
+        <feDisplacementMap id="d2" in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    <g id="ghostLayer" class="ink ghost" filter="url(#pencil2)" transform="translate(1.6 1.2)"></g>
+    <g id="mainLayer" class="ink" filter="url(#pencil)">
+
+      <!-- stage 0 · egg -->
+      <g class="stage" data-stage="0">
+        <path d="M110 70 C70 70 52 130 55 170 C58 215 82 238 110 238 C138 238 162 215 165 170 C168 130 150 70 110 70Z"/>
+        <path d="M60 150 l14 -9 l11 11 l13 -12 l12 10 l12 -11 l12 10 l12 -9 l13 9"/>
+        <path d="M75 195 q10 6 18 2 M128 205 q10 2 16 -6" />
+        <g class="eye"><circle class="white" cx="96" cy="124" r="10"/><circle class="pupil" cx="96" cy="124" r="4.2"/></g>
+        <g class="eye"><circle class="white" cx="126" cy="124" r="10"/><circle class="pupil" cx="126" cy="124" r="4.2"/></g>
+      </g>
+
+      <!-- stage 1 · sketch -->
+      <g class="stage" data-stage="1">
+        <path d="M74 80 H146 Q160 80 160 94 V150 Q160 164 146 164 H74 Q60 164 60 150 V94 Q60 80 74 80Z"/>
+        <g class="eye"><circle class="white" cx="90" cy="118" r="15"/><circle class="pupil" cx="90" cy="118" r="6"/></g>
+        <g class="eye"><circle class="white" cx="130" cy="118" r="15"/><circle class="pupil" cx="130" cy="118" r="6"/></g>
+        <path d="M102 146 q8 5 16 0"/>
+        <path d="M86 164 L80 228 M134 164 L140 228 M72 230 h16 M132 230 h16"/>
+      </g>
+
+      <!-- stage 2 · line -->
+      <g class="stage" data-stage="2">
+        <path d="M110 52 V26"/><circle cx="110" cy="20" r="6"/>
+        <path d="M74 52 H146 Q160 52 160 66 V118 Q160 132 146 132 H74 Q60 132 60 118 V66 Q60 52 74 52Z"/>
+        <g class="eye"><circle class="white" cx="90" cy="90" r="14"/><circle class="pupil" cx="90" cy="90" r="5.6"/></g>
+        <g class="eye"><circle class="white" cx="130" cy="90" r="14"/><circle class="pupil" cx="130" cy="90" r="5.6"/></g>
+        <path d="M103 116 q7 4 14 0"/>
+        <path d="M110 132 V142"/>
+        <path d="M82 142 H138 L146 206 H74 Z"/>
+        <path d="M104 166 a6 6 0 1 1 12 0 a6 6 0 1 1 -12 0"/>
+        <path d="M82 150 Q56 168 60 196 M138 150 Q164 168 160 196"/>
+        <path d="M92 206 L90 250 M128 206 L130 250 M82 252 h14 M124 252 h14"/>
+      </g>
+
+      <!-- stage 3 · partner (chin up, hands behind back, tutu) -->
+      <g class="stage" data-stage="3">
+        <g transform="rotate(-9 110 132)">
+          <path d="M110 52 V26"/><circle cx="110" cy="20" r="6"/>
+          <g class="spark">
+            <line x1="110" y1="4" x2="110" y2="-6"/><line x1="122" y1="10" x2="130" y2="3"/>
+            <line x1="98" y1="10" x2="90" y2="3"/><line x1="125" y1="22" x2="134" y2="23"/><line x1="95" y1="22" x2="86" y2="23"/>
+          </g>
+          <path d="M74 52 H146 Q160 52 160 66 V118 Q160 132 146 132 H74 Q60 132 60 118 V66 Q60 52 74 52Z"/>
+          <g class="eye"><circle class="white" cx="90" cy="86" r="14"/><circle class="pupil" cx="90" cy="86" r="5.6"/></g>
+          <g class="eye"><circle class="white" cx="130" cy="86" r="14"/><circle class="pupil" cx="130" cy="86" r="5.6"/></g>
+          <path d="M104 114 q6 3 12 0"/>
+        </g>
+        <path d="M110 132 V142"/>
+        <path d="M84 142 H136 L140 186 H80 Z"/>
+        <path d="M84 150 Q66 166 80 182 M136 150 Q154 166 140 182"/>
+        <path d="M62 196 q6 -14 12 0 q6 -14 12 0 q6 -14 12 0 q6 -14 12 0 q6 -14 12 0 q6 -14 12 0 q6 -14 12 0 q6 -14 12 0"/>
+        <path d="M70 186 Q58 194 60 202 Q110 214 160 202 Q162 194 150 186"/>
+        <path d="M98 206 L92 252 M122 206 L138 248 M84 254 h14 M134 250 l14 4"/>
+      </g>
+    </g>
+  </svg>
+  <div id="meter"><span id="stageName">egg</span><span class="dots"><i></i><i></i><i></i><i></i></span></div>
+  <div id="hint">(look around, I'll grow)</div>
+</div>
+
+<nav>
+  <a data-sec="research"     style="left:56vw;top:30vh;transform:rotate(-2deg)">research<span class="note">robots, mostly</span></a>
+  <a data-sec="publications" style="left:74vw;top:44vh;transform:rotate(1.5deg)">publications</a>
+  <a data-sec="drawings"     style="left:48vw;top:58vh;transform:rotate(-1deg)">drawings<span class="note">pencil &amp; one-line</span></a>
+  <a data-sec="cellar"       style="left:68vw;top:70vh;transform:rotate(2deg)">the cellar<span class="note">natural wine notes</span></a>
+  <a data-sec="cv"           style="left:82vw;top:24vh;transform:rotate(-3deg)">cv (Nov. 2026)</a>
+</nav>
+
+<div id="cord" title="lights"><svg width="30" height="96" viewBox="0 0 30 96"><line x1="15" y1="0" x2="15" y2="78"/><circle cx="15" cy="84" r="6"/></svg><span>lights</span></div>
+
+<div id="dark"></div>
+<canvas id="fx"></canvas>
+
+<aside id="panel" aria-live="polite"><button id="close" aria-label="close">×</button><div id="panelBody"></div></aside>
+
+<footer>click anywhere for fireworks · <a id="reset">start over</a></footer>
+
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- squiggle underlines ---------- */
+$$('nav a').forEach(a => {
+  a.insertAdjacentHTML('beforeend',
+    `<svg viewBox="0 0 100 8" preserveAspectRatio="none"><path d="M1 5 Q12 1 24 5 T48 4 T72 5 T99 3"/></svg>`);
+});
+
+/* ---------- content (replace the [brackets]) ---------- */
+const SECTIONS = {
+  research: `<h2>research</h2><p class="hand">what I'm building right now</p>
+    <p>[One or two sentences about your robotics research — the question you keep coming back to.]</p>
+    <ul><li><b>[Project A]</b> — [manipulation / locomotion / HRI …]</li><li><b>[Project B]</b> — [short line]</li><li><b>[Lab / advisor]</b></li></ul>`,
+  publications: `<h2>publications</h2><ul>
+    <li><b>[Paper title]</b><br>[Authors] · [Venue 2026] · <u>pdf</u></li>
+    <li><b>[Paper title]</b><br>[Authors] · [Venue 2025] · <u>pdf</u></li></ul>`,
+  drawings: `<h2>drawings</h2><p class="hand">pencil, charcoal, one continuous line</p>
+    <div class="grid"><div class="frame">scan #1</div><div class="frame">scan #2</div><div class="frame">scan #3</div><div class="frame">scan #4</div></div>`,
+  cellar: `<h2>the cellar</h2><p class="hand">bottles I'd open again</p><ul>
+    <li><b>[Producer] — [Cuvée]</b><br>[orange · cloudy · a little funky]</li>
+    <li><b>[Producer] — [Cuvée]</b><br>[pét-nat · pear skin · too easy to drink]</li>
+    <li><b>[Producer] — [Cuvée]</b><br>[light red · chilled · fireworks night]</li></ul>`,
+  cv: `<h2>cv</h2><p>[Short line about education / position.]</p><p><u>download pdf →</u></p>`
+};
+
+/* ---------- partner / evolution ---------- */
+const NAMES = ['egg', 'sketch', 'line', 'partner'];
+const WOBBLE = [7, 4.5, 2.6, 1.6];
+let visited = new Set(JSON.parse(localStorage.getItem('visited') || '[]'));
+let stage = -1;
+const bot = $('#bot');
+
+function stageFor(){ return Math.min(3, visited.size); }
+
+function render(s){
+  stage = s;
+  $$('#mainLayer .stage').forEach(g => g.classList.toggle('on', +g.dataset.stage === s));
+  // pencil "second pass": a slightly offset ghost copy, without pupils
+  const src = $(`#mainLayer .stage[data-stage="${s}"]`).cloneNode(true);
+  src.querySelectorAll('.pupil').forEach(n => n.remove());
+  const ghost = $('#ghostLayer'); ghost.innerHTML = ''; ghost.appendChild(src);
+  $('#d1').setAttribute('scale', WOBBLE[s]); $('#d2').setAttribute('scale', WOBBLE[s] + 1.5);
+  $('#stageName').textContent = NAMES[s];
+  $$('#meter .dots i').forEach((d, i) => d.classList.toggle('on', i <= s));
+  $('#hint').style.opacity = s === 3 ? 0 : 1;
+  $('#hint').textContent = s === 3 ? '' : ['(look around, I\'ll grow)', '(more…)', '(almost)'][s];
+  $$('nav a').forEach(a => a.classList.toggle('seen', visited.has(a.dataset.sec)));
+}
+
+function say(text, ms = 1600){
+  const b = $('#bubble'); b.textContent = text; b.classList.add('show');
+  clearTimeout(say.t); say.t = setTimeout(() => b.classList.remove('show'), ms);
+}
+
+function evolveIfNeeded(){
+  const next = stageFor();
+  if (next <= stage) return;
+  bot.classList.remove('evolving'); void bot.offsetWidth; bot.classList.add('evolving');
+  const r = bot.getBoundingClientRect();
+  burst(r.left + r.width / 2, r.top + r.height * .45, 26, true);
+  setTimeout(() => { render(next); say(next === 3 ? 'partner mode ✦' : '!'); }, 650);
+}
+
+/* boiling pencil line */
+let seed = 1;
+if (!reduce) setInterval(() => {
+  seed = seed % 30 + 1;
+  $('#t1').setAttribute('seed', seed); $('#t2').setAttribute('seed', seed + 40);
+}, 140);
+
+/* eyes follow the cursor */
+const eyeBase = new Map();
+function look(x, y){
+  $$('#mainLayer .stage.on .eye').forEach(eye => {
+    const w = eye.querySelector('.white'), p = eye.querySelector('.pupil');
+    if (!eyeBase.has(p)) eyeBase.set(p, [+p.getAttribute('cx'), +p.getAttribute('cy'), +w.getAttribute('r') - +p.getAttribute('r') - 2]);
+    const [cx, cy, max] = eyeBase.get(p);
+    const r = w.getBoundingClientRect();
+    const dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
+    const d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 160) * max;
+    p.setAttribute('cx', cx + dx / d * k); p.setAttribute('cy', cy + dy / d * k);
+  });
+}
+addEventListener('pointermove', e => {
+  look(e.clientX, e.clientY);
+  document.body.style.setProperty('--mx', e.clientX + 'px');
+  document.body.style.setProperty('--my', e.clientY + 'px');
+});
+
+const LINES = ['beep.', '…hi', 'draw me again?', 'lights off?', 'one more glass?', '불꽃놀이 보러 갈래?', 'chin up ✦', 'zzz'];
+bot.addEventListener('click', e => {
+  e.stopPropagation();
+  bot.classList.remove('hop'); void bot.offsetWidth; bot.classList.add('hop');
+  say(stage === 0 ? '*crack*' : LINES[Math.floor(Math.random() * LINES.length)]);
+});
+
+/* ---------- sections ---------- */
+function open(sec){
+  $('#panelBody').innerHTML = SECTIONS[sec];
+  $('#panel').classList.add('open');
+  if (!visited.has(sec)) {
+    visited.add(sec); localStorage.setItem('visited', JSON.stringify([...visited]));
+    render(stage); evolveIfNeeded();
+  }
+}
+$$('nav a').forEach(a => a.addEventListener('click', e => { e.stopPropagation(); open(a.dataset.sec); }));
+$('#close').addEventListener('click', e => { e.stopPropagation(); $('#panel').classList.remove('open'); });
+$('#panel').addEventListener('click', e => e.stopPropagation());
+addEventListener('keydown', e => { if (e.key === 'Escape') $('#panel').classList.remove('open'); });
+$('#reset').addEventListener('click', e => {
+  e.stopPropagation(); visited.clear(); localStorage.removeItem('visited'); render(0); say('…again?');
+});
+
+/* ---------- lamp cord: indirect light mode ---------- */
+$('#cord').addEventListener('click', e => {
+  e.stopPropagation();
+  const c = $('#cord'); c.classList.add('pull'); setTimeout(() => c.classList.remove('pull'), 300);
+  document.body.classList.toggle('night');
+  if (document.body.classList.contains('night')) setTimeout(() => say('…cozy'), 500);
+});
+
+/* ---------- line fireworks ---------- */
+const cv = $('#fx'), ctx = cv.getContext('2d');
+let rays = [];
+function size(){ cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+size(); addEventListener('resize', size);
+
+function burst(x, y, n = 22, small = false){
+  const night = document.body.classList.contains('night');
+  const palette = night ? ['#f2b56b', '#ffd9a0', '#c4505d'] : ['#2f2a26', '#2f2a26', '#8c2f39'];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + Math.random() * .25;
+    rays.push({ x, y, a, len: 0, max: (small ? 40 : 70) + Math.random() * (small ? 30 : 80),
+      v: 4 + Math.random() * 3, life: 1, bend: (Math.random() - .5) * .5,
+      c: palette[Math.floor(Math.random() * palette.length)], w: .8 + Math.random() * 1.2, night });
+  }
+  if (!tick.running) { tick.running = true; requestAnimationFrame(tick); }
+}
+function tick(){
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  rays = rays.filter(r => r.life > 0);
+  for (const r of rays) {
+    if (r.len < r.max) r.len += r.v *= .96; else r.life -= .025;
+    const inner = r.len * .45;
+    const ex = r.x + Math.cos(r.a) * r.len, ey = r.y + Math.sin(r.a) * r.len + r.len * r.len * .002;
+    const mx = r.x + Math.cos(r.a + r.bend) * (inner + r.len) / 2, my = r.y + Math.sin(r.a + r.bend) * (inner + r.len) / 2;
+    ctx.globalAlpha = Math.max(0, r.life);
+    ctx.strokeStyle = r.c; ctx.lineWidth = r.w; ctx.lineCap = 'round';
+    ctx.shadowBlur = r.night ? 10 : 0; ctx.shadowColor = r.c;
+    ctx.beginPath();
+    ctx.moveTo(r.x + Math.cos(r.a) * inner, r.y + Math.sin(r.a) * inner);
+    ctx.quadraticCurveTo(mx, my, ex, ey);
+    ctx.stroke();
+    if (r.len >= r.max * .95) { ctx.beginPath(); ctx.arc(ex, ey + 4, r.w, 0, 7); ctx.fillStyle = r.c; ctx.fill(); }
+  }
+  if (rays.length) requestAnimationFrame(tick); else { tick.running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+addEventListener('click', e => { if (!e.target.closest('a,button,#cord,#panel')) burst(e.clientX, e.clientY); });
+
+function setLook(l){
+  document.body.dataset.look = l; localStorage.setItem('look', l);
+  $$('#looks button').forEach(b => b.classList.toggle('on', b.dataset.l === l));
+}
+$$('#looks button').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setLook(b.dataset.l); }));
+$('#looks').addEventListener('click', e => e.stopPropagation());
+setLook(new URLSearchParams(location.search).get('look') || localStorage.getItem('look') || 'paper');
+
+render(stageFor()); requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove("preload")));
+</script>
+</body>
+</html>

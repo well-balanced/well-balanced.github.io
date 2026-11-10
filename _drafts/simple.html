@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400&family=Gaegu&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden}
+  body{font-family:'IBM Plex Mono',monospace;font-weight:300}
+  a{color:inherit;text-decoration:none}
+  .v{position:fixed;inset:0;display:none}
+  .v.on{display:block}
+  .links a{position:absolute;font-size:11.5px;letter-spacing:.03em;white-space:nowrap}
+  .links a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+  .ink{fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .grain::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.4;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- 1 · paper (closest to the reference) ---------- */
+  .v1{background:#f3eee4;color:#2f2a26}
+  .v1 h1{position:absolute;left:7vw;top:8vh;margin:0;font:italic 400 clamp(48px,6.5vw,86px) 'Cormorant Garamond',serif}
+  .v1 .bot{position:absolute;left:9vw;bottom:16vh;width:min(190px,22vw)}
+  .v1 .bot .ink{stroke:#2f2a26;stroke-width:2.6}
+  .v1 .ask{position:absolute;left:9vw;bottom:9vh;font-size:11px;color:#6d655d}
+  .v1 .links a{color:#4a443e}
+
+  /* ---------- 2 · one line ---------- */
+  .v2{background:#fff;color:#111}
+  .v2 .line{position:absolute;left:0;right:0;top:22vh;width:100%;height:36vh}
+  .v2 .line .ink{stroke:#111;stroke-width:1.6}
+  .v2 .draw{stroke-dasharray:1;stroke-dashoffset:1}
+  .v2.on .draw{animation:draw 3.2s cubic-bezier(.6,.1,.3,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .v2 h1{position:absolute;left:0;right:0;top:63vh;text-align:center;margin:0;font:400 clamp(40px,5vw,64px) 'Instrument Serif',serif;letter-spacing:-.01em}
+  .v2 nav{position:absolute;left:0;right:0;top:calc(63vh + 84px);text-align:center;font-size:11.5px;color:#777;letter-spacing:.05em}
+  .v2 nav a{margin:0 10px}
+  .v2 nav a:hover{color:#111}
+
+  /* ---------- 3 · warm room (indirect light) ---------- */
+  .v3{background:radial-gradient(ellipse 40vw 30vh at 24% 92%, rgba(233,168,92,.22), transparent 70%), linear-gradient(#2a221c,#1d1713);color:#ead8b8}
+  .v3 h1{position:absolute;left:7vw;top:9vh;margin:0;font:italic 400 clamp(48px,6.5vw,86px) 'Instrument Serif',serif}
+  .v3 .tag{position:absolute;left:7vw;top:calc(9vh + clamp(60px,7.5vw,100px));font-size:11px;color:#a08d72}
+  .v3 .bot{position:absolute;left:16vw;bottom:12vh;width:min(170px,20vw)}
+  .v3 .bot .ink{stroke:#ead8b8;stroke-width:2.4}
+  .v3 .bot .white{fill:#211a15}
+  .v3 .bot .pupil{fill:#e9a85c;filter:drop-shadow(0 0 3px #e9a85c)}
+  .v3 .spark{position:absolute;right:12vw;top:12vh;width:120px;opacity:.75}
+  .v3 .spark .ink{stroke:#e9a85c;stroke-width:1.3}
+  .v3 .links a{color:#d9c6a6}
+  .v3 .links a:hover{color:#f2c27b}
+
+  /* ---------- 4 · notebook (robot as a technical sketch) ---------- */
+  .v4{background:
+      linear-gradient(rgba(70,110,170,.10) 1px, transparent 1px) 0 0/24px 24px,
+      linear-gradient(90deg, rgba(70,110,170,.10) 1px, transparent 1px) 0 0/24px 24px, #f6f3ea;color:#3a3a3a}
+  .v4 h1{position:absolute;left:7vw;top:7vh;margin:0;font:400 clamp(56px,7vw,96px) 'Nanum Pen Script',cursive;color:#2b2b2b}
+  .v4 .date{position:absolute;right:7vw;top:9vh;font:20px 'Gaegu',cursive;color:#777}
+  .v4 .sketch{position:absolute;left:8vw;top:26vh;width:min(560px,52vw);height:auto}
+  .v4 .sketch .ink{stroke:#3a3a3a;stroke-width:1.8}
+  .v4 .sketch .lead{stroke:#888;stroke-width:1;stroke-dasharray:3 4}
+  .v4 .sketch text{font-family:'Gaegu',cursive;font-size:17px;fill:#555}
+  .v4 .todo{position:absolute;left:66vw;top:30vh;font:24px/2.1 'Gaegu',cursive}
+  .v4 .todo a{display:block;position:static;font:inherit}
+  .v4 .todo a::before{content:"□ ";color:#888}
+  .v4 .todo a:hover::before{content:"☑ ";color:#b8323f}
+
+  /* ---------- 5 · dancer (Degas idea) ---------- */
+  .v5{background:
+      radial-gradient(ellipse 60vw 50vh at 50% 30%, rgba(255,240,210,.45), transparent 70%),
+      linear-gradient(#c9c3a3 0, #b8b190 64%, #c99d63 64.2%, #b78850 100%);color:#3b2a20}
+  .v5 h1{position:absolute;left:6vw;top:7vh;margin:0;z-index:2;font:italic 400 clamp(44px,5.6vw,76px) 'Cormorant Garamond',serif}
+  .v5 .dancer{position:absolute;left:50%;bottom:6vh;transform:translateX(-50%);height:76vh;width:auto;overflow:visible}
+  .v5 .hint{position:absolute;left:0;right:0;bottom:3vh;text-align:center;font-size:10.5px;letter-spacing:.15em;color:#6e5440;text-transform:uppercase}
+  .v5 .links{position:relative;z-index:2}
+  .v5 .links a{color:#3b2a20}
+  .v5.grain::after{opacity:.75}
+
+  /* ---------- switcher (for comparing only — delete later) ---------- */
+  #sw{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99;display:flex;gap:2px;padding:3px;border-radius:20px;
+    background:rgba(255,255,255,.75);backdrop-filter:blur(6px);box-shadow:0 1px 6px rgba(0,0,0,.15);font-size:11px}
+  #sw button{all:unset;cursor:pointer;padding:4px 11px;border-radius:16px;color:#666}
+  #sw button.on{background:#222;color:#fff}
+
+  @media (max-width:760px){
+    .links a{position:static !important;display:block;margin:6px 0}
+    .links{position:absolute !important;left:9vw;bottom:14vh}
+    .v1 .bot,.v3 .bot{bottom:34vh}
+    .v4 .sketch{width:84vw}
+    .v4 .todo{left:9vw;top:auto;bottom:10vh}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="pencil"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="pastel" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="2" result="grain"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="9" result="wob"/>
+      <feDisplacementMap in="SourceGraphic" in2="wob" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.6 1.25" result="holes"/>
+      <feComposite in="d" in2="holes" operator="in"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- 1 · paper -->
+<section class="v v1 grain" data-v="1">
+  <h1>Your Name</h1>
+  <svg class="bot" viewBox="0 0 220 270" filter="url(#pencil)">
+    <g class="ink">
+      <path d="M110 52 V26"/><circle cx="110" cy="20" r="6"/>
+      <path d="M74 52 H146 Q160 52 160 66 V118 Q160 132 146 132 H74 Q60 132 60 118 V66 Q60 52 74 52Z"/>
+      <circle class="white" cx="90" cy="90" r="16" fill="#fff"/><circle class="white" cx="130" cy="90" r="16" fill="#fff"/>
+      <path d="M110 132 V142 M82 142 H138 L146 206 H74 Z M92 206 L90 250 M128 206 L130 250 M82 252 h14 M124 252 h14"/>
+    </g>
+    <g class="eye" data-c="90,90" data-m="9"><circle class="pupil" cx="90" cy="90" r="7" fill="#1d1a17"/></g>
+    <g class="eye" data-c="130,90" data-m="9"><circle class="pupil" cx="130" cy="90" r="7" fill="#1d1a17"/></g>
+  </svg>
+  <div class="ask">ask me about robots !</div>
+  <div class="links">
+    <a href="#" style="left:62vw;top:24vh">curriculum vitae (Nov. 2026)</a>
+    <a href="#" style="left:54vw;top:38vh">research</a>
+    <a href="#" style="left:76vw;top:47vh">publications</a>
+    <a href="#" style="left:50vw;top:62vh">drawings</a>
+    <a href="#" style="left:70vw;top:71vh">misc · natural wine</a>
+  </div>
+</section>
+
+<!-- 2 · one line -->
+<section class="v v2" data-v="2">
+  <svg class="line" viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet">
+    <path class="ink draw" pathLength="1" d="M-200 240 H455 L458 194 L446 194 L452 146 H492 V134 H462 Q450 134 450 122 V72 Q450 60 462 60 H497 V36 a5 5 0 1 1 6 0 V60 H538 Q550 60 550 72 V122 Q550 134 538 134 H508 V146 H548 L554 194 L541 194 L544 240 H1200"/>
+    <g class="eye" data-c="480,96" data-m="5"><circle class="ink" cx="480" cy="96" r="11" style="stroke:#111;stroke-width:1.6"/><circle class="pupil" cx="480" cy="96" r="3.4" fill="#111"/></g>
+    <g class="eye" data-c="520,96" data-m="5"><circle class="ink" cx="520" cy="96" r="11" style="stroke:#111;stroke-width:1.6"/><circle class="pupil" cx="520" cy="96" r="3.4" fill="#111"/></g>
+  </svg>
+  <h1>Your Name</h1>
+  <nav><a href="#">research</a>/<a href="#">publications</a>/<a href="#">drawings</a>/<a href="#">misc</a>/<a href="#">cv</a></nav>
+</section>
+
+<!-- 3 · warm room -->
+<section class="v v3 grain" data-v="3">
+  <h1>Your Name</h1>
+  <div class="tag">robots by day · lines by night</div>
+  <svg class="spark" viewBox="-60 -60 120 120" filter="url(#pencil)"><g class="ink">
+    <path d="M0 -14 V-44 M10 -10 L32 -32 M14 0 H46 M10 10 L30 30 M0 14 V40 M-10 10 L-30 30 M-14 0 H-44 M-10 -10 L-32 -32"/>
+    <circle cx="0" cy="-50" r="1.5"/><circle cx="38" cy="-38" r="1.5"/><circle cx="52" cy="0" r="1.5"/><circle cx="-36" cy="36" r="1.5"/>
+  </g></svg>
+  <svg class="bot" viewBox="0 0 220 270" filter="url(#pencil)">
+    <g class="ink">
+      <path d="M110 52 V26"/><circle cx="110" cy="20" r="6"/>
+      <path d="M74 52 H146 Q160 52 160 66 V118 Q160 132 146 132 H74 Q60 132 60 118 V66 Q60 52 74 52Z"/>
+      <circle class="white" cx="90" cy="90" r="15"/><circle class="white" cx="130" cy="90" r="15"/>
+      <path d="M103 116 q7 4 14 0 M110 132 V142 M82 142 H138 L146 206 H74 Z M92 206 L90 250 M128 206 L130 250 M82 252 h14 M124 252 h14"/>
+    </g>
+    <g class="eye" data-c="90,90" data-m="8"><circle class="pupil" cx="90" cy="90" r="5.5"/></g>
+    <g class="eye" data-c="130,90" data-m="8"><circle class="pupil" cx="130" cy="90" r="5.5"/></g>
+  </svg>
+  <div class="links">
+    <a href="#" style="left:52vw;top:40vh">research</a>
+    <a href="#" style="left:70vw;top:50vh">publications</a>
+    <a href="#" style="left:56vw;top:64vh">drawings</a>
+    <a href="#" style="left:76vw;top:72vh">the cellar</a>
+    <a href="#" style="left:80vw;top:34vh">cv</a>
+  </div>
+</section>
+
+<!-- 4 · notebook -->
+<section class="v v4" data-v="4">
+  <h1>Your Name</h1>
+  <div class="date">fig. 1 — me, roughly</div>
+  <svg class="sketch" viewBox="0 0 560 320" filter="url(#pencil)">
+    <g class="ink" transform="translate(150 20)">
+      <path d="M110 52 V26"/><circle cx="110" cy="20" r="6"/>
+      <path d="M74 52 H146 Q160 52 160 66 V118 Q160 132 146 132 H74 Q60 132 60 118 V66 Q60 52 74 52Z"/>
+      <circle cx="90" cy="90" r="14"/><circle cx="130" cy="90" r="14"/><circle cx="90" cy="90" r="4" fill="#3a3a3a"/><circle cx="130" cy="90" r="4" fill="#3a3a3a"/>
+      <path d="M110 132 V142 M82 142 H138 L146 206 H74 Z M104 170 a6 6 0 1 1 12 0 a6 6 0 1 1 -12 0 M92 206 L90 250 M128 206 L130 250 M82 252 h14 M124 252 h14"/>
+    </g>
+    <path class="lead" d="M266 38 L360 18 M232 110 L120 86 M266 190 L370 214 M240 266 L130 290"/>
+    <text x="366" y="22">antenna (picks up fireworks)</text>
+    <text x="0" y="82">camera ×2</text>
+    <text x="376" y="220">wine compartment</text>
+    <text x="0" y="296">legs — still learning</text>
+  </svg>
+  <div class="todo">
+    <a href="#">research</a><a href="#">publications</a><a href="#">drawings</a><a href="#">natural wine log</a><a href="#">cv</a>
+  </div>
+</section>
+
+<!-- 5 · dancer -->
+<section class="v v5 grain" data-v="5">
+  <h1>Your Name</h1>
+  <div class="links">
+    <a href="#" style="left:6vw;top:calc(7vh + 90px)">research</a>
+    <a href="#" style="left:6vw;top:calc(7vh + 112px)">publications</a>
+    <a href="#" style="left:6vw;top:calc(7vh + 134px)">drawings</a>
+    <a href="#" style="left:6vw;top:calc(7vh + 156px)">misc</a>
+    <a href="#" style="left:6vw;top:calc(7vh + 178px)">cv</a>
+  </div>
+  <svg class="dancer" viewBox="0 0 300 400"><g id="dancer" filter="url(#pastel)"></g></svg>
+  <div class="hint">move slowly ←  →</div>
+</section>
+
+<div id="sw">
+  <button data-v="1">1 paper</button><button data-v="2">2 one line</button><button data-v="3">3 warm room</button><button data-v="4">4 notebook</button><button data-v="5">5 dancer</button>
+</div>
+
+<script>
+const $$ = s => [...document.querySelectorAll(s)];
+
+/* ---------- switcher ---------- */
+function show(v){
+  $$('.v').forEach(s => s.classList.toggle('on', s.dataset.v === v));
+  $$('#sw button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  history.replaceState(null, '', '?v=' + v);
+}
+$$('#sw button').forEach(b => b.onclick = () => show(b.dataset.v));
+addEventListener('keydown', e => { if ('12345'.includes(e.key)) show(e.key); });
+show(new URLSearchParams(location.search).get('v') || '1');
+
+/* ---------- eyes follow the cursor (the only interaction on 1–3) ---------- */
+addEventListener('pointermove', e => {
+  $$('.v.on .eye').forEach(g => {
+    const p = g.querySelector('.pupil'), [cx, cy] = g.dataset.c.split(',').map(Number), m = +g.dataset.m;
+    const svg = g.ownerSVGElement, pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const dx = loc.x - cx, dy = loc.y - cy, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 120) * m * .55;
+    p.setAttribute('cx', cx + dx / d * k); p.setAttribute('cy', cy + dy / d * k);
+  });
+  target = e.clientX / innerWidth;
+});
+
+/* ---------- 5 · a Degas-toned dancer that moves with the mouse ---------- */
+// poses as joints; mouse x scrubs through them like a flipbook
+const POSES = [
+  // arabesque
+  {head:[118,92],neck:[130,116],shL:[120,122],shR:[146,118],elL:[84,112],hL:[46,100],elR:[182,100],hR:[226,84],hip:[160,200],hipL:[152,205],hipR:[168,200],kL:[152,290],fL:[152,380],kR:[222,192],fR:[286,176]},
+  // little dancer: 4th position, hands behind, chin up
+  {head:[146,66],neck:[150,100],shL:[132,110],shR:[168,110],elL:[120,150],hL:[142,186],elR:[180,150],hR:[158,186],hip:[150,200],hipL:[140,205],hipR:[160,205],kL:[132,290],fL:[120,378],kR:[170,286],fR:[192,372]},
+  // bras bas, first position
+  {head:[150,70],neck:[150,100],shL:[132,110],shR:[168,110],elL:[122,150],hL:[138,192],elR:[178,150],hR:[162,192],hip:[150,200],hipL:[140,205],hipR:[160,205],kL:[140,290],fL:[136,380],kR:[160,290],fR:[164,380]},
+  // à la seconde, demi-plié
+  {head:[150,80],neck:[150,110],shL:[132,120],shR:[168,120],elL:[96,128],hL:[56,142],elR:[204,128],hR:[244,142],hip:[150,210],hipL:[140,214],hipR:[160,214],kL:[118,296],fL:[110,380],kR:[182,296],fR:[190,380]},
+  // en couronne, relevé
+  {head:[150,62],neck:[150,92],shL:[132,102],shR:[168,102],elL:[112,66],hL:[142,36],elR:[188,66],hR:[158,36],hip:[150,192],hipL:[141,197],hipR:[159,197],kL:[146,284],fL:[148,370],kR:[154,284],fR:[152,370]},
+];
+const lerp = (a, b, t) => a + (b - a) * t;
+function poseAt(t){
+  t = Math.max(0, Math.min(POSES.length - 1, t));
+  const i = Math.min(POSES.length - 2, Math.floor(t)), f = t - i, s = f * f * (3 - 2 * f), A = POSES[i], B = POSES[i + 1], P = {};
+  for (const k in A) P[k] = [lerp(A[k][0], B[k][0], s), lerp(A[k][1], B[k][1], s)];
+  return P;
+}
+const SKIN = '#d9a582', LINE = '#4a3022', BODICE = '#e6c381', TUTU = ['#f4c4a4', '#f9dcc4', '#eeb196'], HAIR = '#3b2418', TEAL = '#5f8f86';
+const pt = p => p.join(' ');
+function limb(a, b, c, w){
+  const d = `M${pt(a)} Q${pt(b)} ${pt(c)}`;
+  return `<path d="${d}" stroke="${LINE}" stroke-width="${w + 2.6}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${SKIN}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+}
+function dancer(P, op){
+  const ang = Math.atan2(P.neck[1] - P.hip[1], P.neck[0] - P.hip[0]) * 180 / Math.PI + 90;
+  const hAng = Math.atan2(P.head[1] - P.neck[1], P.head[0] - P.neck[0]) * 180 / Math.PI + 90;
+  let tutu = `<ellipse cx="0" cy="8" rx="56" ry="13" fill="${TUTU[0]}" opacity=".85"/>`;
+  for (let x = -54; x <= 54; x += 5) {
+    tutu += `<path d="M${x * .55} 0 L${x} ${16 + (x % 3)}" stroke="${TUTU[(x / 5 & 3) % 3]}" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  tutu += `<ellipse cx="0" cy="4" rx="40" ry="7" fill="${TUTU[1]}" opacity=".9"/>`;
+  return `<g opacity="${op}">
+    ${limb(P.hipL, P.kL, P.fL, 9)}${limb(P.hipR, P.kR, P.fR, 9)}
+    <path d="M${pt(P.shL)} L${pt(P.shR)} L${pt(P.hipR)} L${pt(P.hipL)}Z" fill="${BODICE}" stroke="${LINE}" stroke-width="2" stroke-linejoin="round"/>
+    <g transform="translate(${pt(P.hip)}) rotate(${ang})">${tutu}</g>
+    ${limb(P.shL, P.elL, P.hL, 6.5)}${limb(P.shR, P.elR, P.hR, 6.5)}
+    <path d="M${pt(P.neck)} L${pt(P.head)}" stroke="${SKIN}" stroke-width="8" stroke-linecap="round"/>
+    <g transform="translate(${pt(P.head)}) rotate(${hAng})">
+      <circle cx="0" cy="-4" r="9" fill="${HAIR}" transform="translate(0 -12)"/>
+      <ellipse cx="0" cy="0" rx="12" ry="15" fill="${SKIN}" stroke="${LINE}" stroke-width="2"/>
+      <path d="M-12 -4 Q-10 -16 0 -16 Q10 -16 12 -4" fill="${HAIR}"/>
+      <path d="M-6 -20 l-6 -5 M6 -20 l6 -5" stroke="${TEAL}" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>`;
+}
+let target = .35, cur = .35, trail = [];
+const g = document.getElementById('dancer');
+(function loop(){
+  if (document.querySelector('.v5.on')) {
+    cur += (target - cur) * .06;
+    const t = cur * (POSES.length - 1);
+    trail.unshift(t); trail.length = Math.min(trail.length, 24);
+    // faint after-images, like the motion blur in a museum photo
+    g.innerHTML = dancer(poseAt(trail[22] ?? t), .12) + dancer(poseAt(trail[11] ?? t), .22) + dancer(poseAt(t), 1);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
