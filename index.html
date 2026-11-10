@@ -192,7 +192,7 @@
   @media (max-width:760px){ .photo{width:104px;margin:-46px -24px 8px 14px} }
 
   /* ---------- no paper: draw straight onto the wall ---------- */
-  #annot{position:fixed;left:0;top:0;pointer-events:none;z-index:3;overflow:visible}
+  #annot{position:absolute;left:0;top:0;pointer-events:none;z-index:3;overflow:visible}
   #annot path{fill:none;stroke:var(--txt,#1f1c19);stroke-linecap:round;stroke-linejoin:round}
   body.pastel #annot{filter:url(#chalk)}
   body.pastel #annot path.p0{stroke:var(--s0);stroke-width:2.2px}
@@ -212,6 +212,7 @@
   /* ---------- phones ---------- */
   @media (max-width:760px){
     html, body{height:auto;min-height:100%}
+    body{padding-bottom:28vh}            /* a little extra room so the dance has space to play out */
     body{overflow-x:hidden;overflow-y:visible}
     #lamp{position:absolute;right:5vw}
     main.note{position:relative;margin:9vh 7vw 0 !important;padding:0 !important;width:auto !important}
@@ -304,12 +305,6 @@ function placeFloor(){
   }
 }
 placeFloor();
-// phones have no mouse: scrolling down the page plays the dance instead
-addEventListener('scroll', () => {
-  if (!mobile()) return;
-  const max = document.documentElement.scrollHeight - innerHeight;
-  target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : .25;
-}, { passive: true });
 addEventListener('resize', placeFloor); addEventListener('load', placeFloor); setTimeout(placeFloor, 300);
 const lamp = document.getElementById('lamp');
 lamp.onclick = () => {
@@ -378,12 +373,17 @@ let mouse = [160, 200], target = .25, cur = .25, gaze = [0, 0], headScr = [0, 0,
 addEventListener('pointermove', e => {
   const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
   const m = pt.matrixTransform(svg.getScreenCTM().inverse()); mouse = [m.x, m.y];
-  target = Math.min(1, Math.max(0, e.clientX / innerWidth));
+  if (e.pointerType === 'mouse') target = Math.min(1, Math.max(0, e.clientX / innerWidth));
 });
 
 /* ---------- draw ---------- */
 function frame(){
-  cur += (target - cur) * .06;
+  if (mobile()) {
+    // phones have no mouse: top of the page → bottom of the page plays the whole dance
+    const max = document.documentElement.scrollHeight - innerHeight;
+    target = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : .25;
+  }
+  cur += (target - cur) * (mobile() ? .14 : .06);
   const P = poseAt(cur * (POSES.length - 1));
   out = '';
 
@@ -544,7 +544,7 @@ function frame(){
   out = '';
   const bg = body.dataset.bg;
   if (bg === 'annotate' || bg === 'neon') {
-    const an = document.getElementById('annot'), vw = document.documentElement.clientWidth, vh = innerHeight;
+    const an = document.getElementById('annot'), vw = document.documentElement.clientWidth, vh = innerHeight;   // drawing spills past this box (overflow: visible), so the page height never feeds back into it
     an.setAttribute('width', vw); an.setAttribute('height', vh); an.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
   }
   if (bg === 'annotate') {
@@ -586,7 +586,9 @@ function frame(){
     sketch([[nm.right + 18, nm.bottom - 14], [nm.right + 44, nm.bottom - 14], [nm.right + 44, nm.bottom + 4], [nm.right + 18, nm.bottom + 4], [nm.right + 18, nm.bottom - 14]], 313, .8, 3, 2);
     sketch([[nm.right + 2, nm.bottom - 6], [nm.right + 18, nm.bottom - 6]], 314, .6, 2, 1);
   }
-  document.getElementById('annotLines').innerHTML = out;
+  const al = document.getElementById('annotLines');
+  al.setAttribute('transform', `translate(${scrollX} ${scrollY})`);   // measured in screen space, placed in page space
+  al.innerHTML = out;
   requestAnimationFrame(frame);
 }
 frame();
