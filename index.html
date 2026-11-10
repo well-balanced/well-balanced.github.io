@@ -54,9 +54,13 @@
     --ink:#3d2c22; --soft:#7a6656; --pupil:#3d2c22; --glow:rgba(240,200,170,.35); --acc:#b06a5a;
     --s0:#3d2c22; --s1:#e3a49a; --s2:#9cbfd0; --h0:#f0c3b5; --h1:#f6d8c7; --h2:#c9dde6;
   }
-  body.pastel{background:
-    radial-gradient(ellipse 30vw 40vh at 18% 20%, var(--wash), transparent 70%),
-    linear-gradient(var(--w1) 0, var(--w2) var(--fat), var(--f1) calc(var(--fat) + .2%), var(--f2) 100%)}
+  /* the wall + floor live on their own layer pinned to the screen (iOS Safari can stop painting a long body background part-way down) */
+  body.pastel{background:transparent}
+  #wall{display:none}
+  body.pastel #wall{display:block;position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(ellipse 30vw 40vh at 18% 20%, var(--wash), transparent 70%),
+      linear-gradient(var(--w1) 0, var(--w2) var(--fat), var(--f1) calc(var(--fat) + .2%), var(--f2) 100%)}
   body.pastel::after{opacity:.5;mix-blend-mode:multiply;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .4 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
   body.pastel[data-pv="etoile"]::after{mix-blend-mode:screen;opacity:.18}
@@ -214,7 +218,7 @@
   @media (max-width:760px){
     html, body{height:auto;min-height:100%}
     body{padding-bottom:28vh}            /* a little extra room so the dance has space to play out */
-    body{overflow-x:hidden;overflow-y:visible}
+    body{overflow-x:clip;overflow-y:visible}
     #lamp{position:absolute;right:5vw}
     main.note{position:relative;margin:9vh 7vw 0 !important;padding:0 !important;width:auto !important}
     body[data-bg="annotate"] .photo, body[data-bg="neon"] .photo{position:relative;left:auto;top:auto;display:block;width:112px;margin:0 0 26px 4px;transform:rotate(-4deg)}
@@ -227,6 +231,7 @@
 </style>
 </head>
 <body data-font="fraunces" data-hand="kalam">
+<div id="wall"></div>
 
 <div id="lamp" title="lights" role="button" aria-label="lights">
   <svg width="70" height="150" viewBox="0 0 70 150">
