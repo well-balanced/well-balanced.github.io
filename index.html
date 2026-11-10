@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#d0d3b9">
 <title>Woosik Kim</title>
 <meta name="description" content="Woosik Kim — master's student at the Robotics &amp; Vision Lab, KAIST. I make artificial things that people can feel something for.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -268,7 +269,16 @@
    to preview the others, add ?theme=dark | light | pastel&pv=paper|ivory|buff|grey to the URL */
 const body = document.body;
 function setTheme(t){ body.classList.toggle('light', t === 'light'); body.classList.toggle('pastel', t === 'pastel'); }
-function setPv(v){ body.dataset.pv = v; }
+function setPv(v){
+  body.dataset.pv = v;
+  // the area past the page edge (iOS bounce, toolbar tint) uses <html>'s plain colour, not body's gradient — match it to the wall/floor
+  const cs = getComputedStyle(body), phone = matchMedia('(max-width:760px)').matches;
+  const edge = (cs.getPropertyValue(phone ? '--w2' : '--f2') || '').trim();
+  if (edge) {
+    document.documentElement.style.backgroundColor = edge;
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', (cs.getPropertyValue('--w1') || edge).trim());
+  }
+}
 const qs = new URLSearchParams(location.search);
 setTheme(qs.get('theme') || 'pastel');
 setPv(qs.get('pv') || localStorage.getItem('lamp') || 'sage');
@@ -305,7 +315,7 @@ function placeFloor(){
   }
 }
 placeFloor();
-addEventListener('resize', placeFloor); addEventListener('load', placeFloor); setTimeout(placeFloor, 300);
+addEventListener('resize', () => { placeFloor(); setPv(body.dataset.pv); }); addEventListener('load', placeFloor); setTimeout(placeFloor, 300);
 const lamp = document.getElementById('lamp');
 lamp.onclick = () => {
   lamp.classList.add('pull'); setTimeout(() => lamp.classList.remove('pull'), 300);
