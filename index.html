@@ -221,7 +221,14 @@
   @media (max-width:760px){
     html{scroll-snap-type:y mandatory}
     html, body{height:auto;min-height:100%}
-    body{overflow-x:clip;overflow-y:visible}
+    body{overflow-x:clip;overflow-y:visible;position:relative}
+    /* iOS Safari: keep everything that sits on top of the page off the scrolling content, so nothing
+       has to be re-blended mid-scroll — grain and glow go behind the text, on top of the wall */
+    body::before, body::after{z-index:-1}
+    /* pen marks cover the whole page (not just the first screen) so their chalk filter isn't clipped,
+       and the marks + robot get their own layers so the scroll never shows half-painted tiles */
+    #annot{width:100%;height:100%}
+    #annot, #fig{transform:translateZ(0);backface-visibility:hidden}
     #lamp{position:absolute;right:5vw}
     main.note{position:relative;margin:0 7vw !important;padding:0 !important;width:auto !important}
     .pg{display:flex;flex-direction:column;justify-content:center;min-height:100vh;min-height:100svh;padding:6vh 0;
@@ -341,7 +348,7 @@ lamp.onclick = () => {
 };
 
 /* ---------- sketchy line engine: every stroke is drawn 3× with jitter + overshoot, and "boils" ---------- */
-let tick = 0;
+let tick = 0, lastDraw = '', lastAnnot = '';
 setInterval(() => tick++, 150);
 function rnd(a, b, c, d){
   let h = Math.imul(a + 1, 374761393) ^ Math.imul(b + 7, 668265263) ^ Math.imul(c + 13, 2246822519) ^ Math.imul(d + 3, 3266489917);
@@ -479,7 +486,8 @@ function frame(){
     pupils += `<circle class="pupil" cx="${(E[0] + gaze[0]).toFixed(2)}" cy="${(E[1] + gaze[1]).toFixed(2)}" r="3.6"/>`;
   }
 
-  document.getElementById('draw').innerHTML = out + pupils;
+  const drawn = out + pupils;
+  if (drawn !== lastDraw) { document.getElementById('draw').innerHTML = drawn; lastDraw = drawn; }   // only repaint when a line actually moved
 
   // the lamp, in the same loose line
   out = '';
@@ -582,12 +590,15 @@ function frame(){
   const bg = body.dataset.bg;
   if (bg === 'annotate' || bg === 'neon') {
     const an = document.getElementById('annot'), vw = document.documentElement.clientWidth, vh = innerHeight;   // drawing spills past this box (overflow: visible), so the page height never feeds back into it
-    an.setAttribute('width', vw); an.setAttribute('height', vh); an.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+    const ah = mobile() ? Math.round(an.getBoundingClientRect().height) || vh : vh;   // phones: CSS sizes it to the whole page
+    if (an.getAttribute('viewBox') !== `0 0 ${vw} ${ah}`) { an.setAttribute('width', vw); an.setAttribute('height', ah); an.setAttribute('viewBox', `0 0 ${vw} ${ah}`); }
   }
+  // everything below is measured in page coordinates, so scrolling alone never changes a single line
+  const pageRect = id => { const r = document.getElementById(id).getBoundingClientRect(), x = scrollX, y = scrollY;
+    return { left: r.left + x, right: r.right + x, top: r.top + y, bottom: r.bottom + y, width: r.width, height: r.height }; };
+  const headPg = [headScr[0] + scrollX, headScr[1] + scrollY, headScr[2]];
   if (bg === 'annotate') {
-    const nm = document.getElementById('mkName').getBoundingClientRect();
-    const ar = document.getElementById('mkArt').getBoundingClientRect();
-    const fl = document.getElementById('mkFeel').getBoundingClientRect();
+    const nm = pageRect('mkName'), ar = pageRect('mkArt'), fl = pageRect('mkFeel');
     // a loose double underline under the name
     sketch([[nm.left - 6, nm.bottom - 10], [nm.left + nm.width * .5, nm.bottom - 5], [nm.right + 10, nm.bottom - 12]], 300, 1.4, 10);
     sketch([[nm.left + 14, nm.bottom - 1], [nm.right - 6, nm.bottom - 3]], 301, 1.2, 8, 2);
@@ -596,7 +607,7 @@ function frame(){
     const wav = []; for (let x = fl.left, i = 0; x <= fl.right + 4; x += 7, i++) wav.push([x, fl.bottom + 1 + (i % 2 ? 2.5 : -1)]);
     sketch(wav, 305, .8, 4);
     if (mobile()) {                               // robot sits just below: the arrow swings round the right margin and down
-      const hx = headScr[0] + 40 * headScr[2], hy = headScr[1] - 18 * headScr[2];
+      const hx = headPg[0] + 40 * headPg[2], hy = headPg[1] - 18 * headPg[2];
       const st = [ar.right + 10, ar.top + ar.height / 2], c1 = [Math.max(st[0], hx) + 40, (st[1] + hy) / 2];
       const curve = []; for (let t = 0; t <= 1.001; t += .1) { const q = 1 - t; curve.push([q * q * st[0] + 2 * q * t * c1[0] + t * t * hx, q * q * st[1] + 2 * q * t * c1[1] + t * t * hy]); }
       sketch(curve, 306, 1.2, 3);
@@ -604,8 +615,8 @@ function frame(){
       sketch([[hx - ux2 * 14 - uy2 * 8, hy - uy2 * 14 + ux2 * 8], [hx, hy], [hx - ux2 * 14 + uy2 * 8, hy - uy2 * 14 - ux2 * 8]], 307, .8, 2);
     } else {
     // an arrow that leaves the circle, runs along the blank line above, and swings over to the robot
-    const colR = document.querySelector('main.note').getBoundingClientRect().right - 30;
-    const y0 = ar.top - 15, hx = headScr[0] - 44 * headScr[2], hy = headScr[1];
+    const colR = document.querySelector('main.note').getBoundingClientRect().right + scrollX - 30;
+    const y0 = ar.top - 15, hx = headPg[0] - 44 * headPg[2], hy = headPg[1];
     const c1 = [(colR + hx) / 2, Math.min(y0, hy) - 50];
     const curve = [[ar.right + 6, ar.top - 2], [ar.right + 18, y0], [colR, y0 - 2]];
     for (let t = .1; t <= 1.001; t += .1) { const q = 1 - t; curve.push([q * q * colR + 2 * q * t * c1[0] + t * t * hx, q * q * y0 + 2 * q * t * c1[1] + t * t * hy]); }
@@ -615,7 +626,7 @@ function frame(){
     }
   }
   if (bg === 'neon') {
-    const nm = document.getElementById('mkName').getBoundingClientRect();
+    const nm = pageRect('mkName');
     // two hanging wires and a little transformer box, like a real neon sign
     sketch([[nm.left + nm.width * .18, -4], [nm.left + nm.width * .18, nm.top + 6]], 310, .8, 2, 2);
     sketch([[nm.right - nm.width * .18, -4], [nm.right - nm.width * .18, nm.top + 6]], 311, .8, 2, 2);
@@ -624,8 +635,7 @@ function frame(){
     sketch([[nm.right + 2, nm.bottom - 6], [nm.right + 18, nm.bottom - 6]], 314, .6, 2, 1);
   }
   const al = document.getElementById('annotLines');
-  al.setAttribute('transform', `translate(${scrollX} ${scrollY})`);   // measured in screen space, placed in page space
-  al.innerHTML = out;
+  if (out !== lastAnnot) { al.innerHTML = out; lastAnnot = out; }
   requestAnimationFrame(frame);
 }
 frame();
