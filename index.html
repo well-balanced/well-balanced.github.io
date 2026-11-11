@@ -216,18 +216,23 @@
   body[data-bg="neon"][data-pv="etoile"] main.note h1{color:#fff3dc !important;
     text-shadow:0 0 4px #fff0d0, 0 0 10px #f5b85e, 0 0 22px #f5b85e, 0 0 44px rgba(245,140,60,.55)}
 
-  /* ---------- phones ---------- */
+  .pg{display:contents}
+  /* ---------- phones: three full-screen pages, scroll snaps one page at a time ---------- */
   @media (max-width:760px){
+    html{scroll-snap-type:y mandatory}
     html, body{height:auto;min-height:100%}
-    body{padding-bottom:28vh}            /* a little extra room so the dance has space to play out */
     body{overflow-x:clip;overflow-y:visible}
     #lamp{position:absolute;right:5vw}
-    main.note{position:relative;margin:9vh 7vw 0 !important;padding:0 !important;width:auto !important}
+    main.note{position:relative;margin:0 7vw !important;padding:0 !important;width:auto !important}
+    .pg{display:flex;flex-direction:column;justify-content:center;min-height:100vh;min-height:100svh;padding:6vh 0;
+      scroll-snap-align:start;scroll-snap-stop:always}
+    .pg .intro.hand p:last-child{margin-bottom:0 !important}
+    .pg .say{margin-top:26px !important}
     body[data-bg="annotate"] .photo, body[data-bg="neon"] .photo{position:relative;left:auto;top:auto;display:block;width:112px;margin:0 0 26px 4px;transform:rotate(-4deg)}
     body[data-font] main.note h1{font-size:44px !important;margin-bottom:10px !important}
     body[data-font] main.note .intro.hand p{font-size:17.5px;line-height:30px;margin-bottom:22px}
     body[data-font] main.note .say{line-height:26px}
-    #fig{height:auto;width:92%;margin:4px auto 34px;display:block;position:relative;right:auto;bottom:auto;overflow:hidden}
+    #fig{width:auto;height:min(calc(86vw * 432 / 320), calc(100svh - 230px));aspect-ratio:320/432;margin:26px auto 0;display:block;position:relative;right:auto;bottom:auto;overflow:hidden;flex:none}
     body::before{background:radial-gradient(ellipse 80vw 30vh at 50% 100%, var(--glow), transparent 70%)}
   }
 </style>
@@ -257,15 +262,20 @@
 
 <main class="note">
   <svg id="noteFrame"><g id="noteLines"></g></svg>
-  <figure class="photo"><img src="img/me.jpg" alt="Woosik reading a book"><svg id="photoFrame"><g id="photoLines"></g></svg></figure>
-  <div class="hello">hello —</div>
-  <h1><span id="mkName">Woosik Kim</span></h1>
-  <div class="intro hand">
-    <p>I'm a master's student in the Robotics &amp; Vision Lab at KAIST.</p>
-    <p>I make <span id="mkArt">artificial things</span> that people can <span id="mkFeel">feel something for</span>.</p>
-    <p>I believe the value of making artificial things feel human is that, along the way, we rediscover our own lives.</p>
-  </div>
+  <!-- on phones each section is one full screen that the scroll snaps to; on desktop they don't exist (display:contents) -->
+  <section class="pg">
+    <figure class="photo"><img src="img/me.jpg" alt="Woosik reading a book"><svg id="photoFrame"><g id="photoLines"></g></svg></figure>
+    <div class="hello">hello —</div>
+    <h1><span id="mkName">Woosik Kim</span></h1>
+    <div class="intro hand"><p>I'm a master's student in the Robotics &amp; Vision Lab at KAIST.</p></div>
+  </section>
+  <section class="pg" id="pgRobot">
+    <div class="intro hand"><p>I make <span id="mkArt">artificial things</span> that people can <span id="mkFeel">feel something for</span>.</p></div>
+  </section>
+  <section class="pg">
+    <div class="intro hand"><p>I believe the value of making artificial things feel human is that, along the way, we rediscover our own lives.</p></div>
   <div class="say">say hi — <a href="mailto:woosik@kaist.ac.kr">woosik@kaist.ac.kr</a> · <a href="https://www.linkedin.com/in/iam-woosik-kim/" target="_blank" rel="noopener">linkedin</a> · <a href="https://github.com/well-balanced" target="_blank" rel="noopener">github</a> · <a href="https://scholar.google.com/citations?user=YNhDuhUAAAAJ" target="_blank" rel="noopener">scholar</a></div>
+  </section>
 </main>
 
 <svg id="annot"><g id="annotLines"></g></svg>
@@ -310,9 +320,9 @@ const mobile = () => matchMedia('(max-width:760px)').matches;
 // on phones the robot steps into the text, right after "…feel something for."
 const figEl = document.getElementById('fig'), figHome = [figEl.parentNode, figEl.nextSibling];
 function placeFloor(){
-  const intro = document.querySelector('main.note .intro');
+  const page = document.getElementById('pgRobot');
   if (mobile()) {
-    if (figEl.parentNode !== intro) intro.insertBefore(figEl, intro.querySelectorAll('p')[2]);
+    if (figEl.parentNode !== page) page.appendChild(figEl);
     figEl.setAttribute('viewBox', '0 -6 320 432');            // case + wooden top only, no tall base
     body.style.setProperty('--fat', '100%');                   // no floor band on phones
   } else {
