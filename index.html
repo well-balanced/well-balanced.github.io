@@ -239,7 +239,8 @@
     body[data-font] main.note h1{font-size:44px !important;margin-bottom:10px !important}
     body[data-font] main.note .intro.hand p{font-size:17.5px;line-height:30px;margin-bottom:22px}
     body[data-font] main.note .say{line-height:26px}
-    #fig{width:auto;height:min(calc(86vw * 432 / 320), calc(100svh - 230px));aspect-ratio:320/432;margin:26px auto 0;display:block;position:relative;right:auto;bottom:auto;overflow:hidden;flex:none}
+    #pgRobot #fig + .intro{margin-top:22px}
+    #fig{width:auto;height:min(calc(86vw * 432 / 320), calc(100svh - 330px));aspect-ratio:320/432;margin:26px auto 0;display:block;position:relative;right:auto;bottom:auto;overflow:hidden;flex:none}
     body::before{background:radial-gradient(ellipse 80vw 30vh at 50% 100%, var(--glow), transparent 70%)}
   }
 </style>
@@ -278,8 +279,6 @@
   </section>
   <section class="pg" id="pgRobot">
     <div class="intro hand"><p>I make <span id="mkArt">artificial things</span> that people can <span id="mkFeel">feel something for</span>.</p></div>
-  </section>
-  <section class="pg">
     <div class="intro hand"><p>And along the way, we rediscover our own lives.</p></div>
   <div class="say">say hi — <a href="mailto:woosik@kaist.ac.kr">woosik@kaist.ac.kr</a> · <a href="https://www.linkedin.com/in/iam-woosik-kim/" target="_blank" rel="noopener">linkedin</a> · <a href="https://github.com/well-balanced" target="_blank" rel="noopener">github</a> · <a href="https://scholar.google.com/citations?user=YNhDuhUAAAAJ" target="_blank" rel="noopener">scholar</a> · <a href="https://drive.google.com/file/d/1raBGV5f8evpylFbIjaW7EwmWVJ4He2G1/view?usp=sharing" target="_blank" rel="noopener">cv</a></div>
   </section>
@@ -329,7 +328,7 @@ const figEl = document.getElementById('fig'), figHome = [figEl.parentNode, figEl
 function placeFloor(){
   const page = document.getElementById('pgRobot');
   if (mobile()) {
-    if (figEl.parentNode !== page) page.appendChild(figEl);
+    if (figEl.parentNode !== page) page.insertBefore(figEl, page.children[1]);   // the robot sits between the two lines
     figEl.setAttribute('viewBox', '0 -6 320 432');            // case + wooden top only, no tall base
     body.style.setProperty('--fat', '100%');                   // no floor band on phones
   } else {
