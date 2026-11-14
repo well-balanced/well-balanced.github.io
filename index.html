@@ -408,15 +408,19 @@ const add = (a, b, k = 1) => [a[0] + b[0] * k, a[1] + b[1] * k];
 
 /* ---------- eyes ---------- */
 const svg = document.getElementById('fig');
-let mouse = [160, 200], target = .25, cur = .25, phase = 1, step = 1, lastX = null, gaze = [0, 0], headScr = [0, 0, 1];
+let mouse = [160, 200], target = .25, cur = .25, phase = 1, step = 1, lastX = null, lastY = null, gaze = [0, 0], headScr = [0, 0, 1];
 addEventListener('pointermove', e => {
   const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
   const m = pt.matrixTransform(svg.getScreenCTM().inverse()); mouse = [m.x, m.y];
-  // only how far the mouse moves sideways matters, not where it is: right steps forward, left steps back
-  if (e.pointerType === 'mouse') { if (lastX !== null) phase += (e.clientX - lastX) / 360; lastX = e.clientX; }
+  // only how far the mouse moves matters, not where it is: whichever direction moved most this event drives
+  // the dance — right or down steps forward, left or up steps back
+  if (e.pointerType === 'mouse') {
+    if (lastX !== null) { const dx = e.clientX - lastX, dy = e.clientY - lastY; phase += (Math.abs(dx) >= Math.abs(dy) ? dx : dy) / 360; }
+    lastX = e.clientX; lastY = e.clientY;
+  }
 });
 // leaving the window and coming back elsewhere shouldn't count as a big swipe
-addEventListener('mouseout', e => { if (!e.relatedTarget) lastX = null; });
+addEventListener('mouseout', e => { if (!e.relatedTarget) lastX = lastY = null; });
 
 /* ---------- draw ---------- */
 function frame(){
